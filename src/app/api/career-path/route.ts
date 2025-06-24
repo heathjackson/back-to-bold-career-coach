@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateCareerPathPrompt } from '@/lib/prompts';
 import OpenAI from 'openai';
 
 // Initialize OpenAI client
@@ -44,7 +43,7 @@ export async function POST(request: NextRequest) {
     console.log('API Key length:', process.env.OPENAI_API_KEY?.length);
 
     // Create a comprehensive prompt that includes all conversational data
-    let comprehensivePrompt = `Career Path Assessment for Return-to-Work Professional
+    const comprehensivePrompt = `Career Path Assessment for Return-to-Work Professional
 
 BACKGROUND:
 - Previous Experience: ${experience}

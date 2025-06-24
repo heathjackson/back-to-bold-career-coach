@@ -59,7 +59,7 @@ export default function CoverLetterPage() {
     }
   };
 
-  const handleEmailCollected = (email: string) => {
+  const handleEmailCollected = () => {
     setHasEmail(true);
     setShowEmailCollector(false);
     // Automatically submit the form after email is collected

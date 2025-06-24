@@ -218,7 +218,7 @@ export default function CareerPathPage() {
     }
   };
 
-  const handleEmailCollected = (email: string) => {
+  const handleEmailCollected = () => {
     setHasEmail(true);
     setShowEmailCollector(false);
     // Automatically submit the form after email is collected
@@ -246,7 +246,7 @@ export default function CareerPathPage() {
             Career Path Assessment
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Let's have a conversation about your career journey and discover opportunities that align with your experience and goals.
+            Let&apos;s have a conversation about your career journey and discover opportunities that align with your experience and goals.
           </p>
         </div>
 
