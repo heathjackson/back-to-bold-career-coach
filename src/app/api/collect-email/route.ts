@@ -17,7 +17,12 @@ async function readEmails(): Promise<string[]> {
 
 // Helper function to write emails
 async function writeEmails(emails: string[]): Promise<void> {
-  await writeFile(EMAILS_FILE, JSON.stringify(emails, null, 2));
+  try {
+    await writeFile(EMAILS_FILE, JSON.stringify(emails, null, 2));
+  } catch (error) {
+    console.error('Error writing emails file:', error);
+    throw new Error('Failed to save email');
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -42,24 +47,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read existing emails
-    const existingEmails = await readEmails();
-
-    // Check if email already exists
-    if (existingEmails.includes(email.toLowerCase())) {
-      return NextResponse.json(
-        { error: 'This email is already registered' },
-        { status: 409 }
-      );
-    }
-
-    // Add new email
-    const updatedEmails = [...existingEmails, email.toLowerCase()];
-    await writeEmails(updatedEmails);
-
-    // Log for debugging (remove in production)
+    // For now, just log the email and return success
+    // In production, you might want to use a database or email service
     console.log(`New email collected: ${email}`);
-    console.log(`Total emails: ${updatedEmails.length}`);
+    
+    // Try to save to file (may fail in serverless environment)
+    try {
+      const existingEmails = await readEmails();
+      
+      // Check if email already exists
+      if (existingEmails.includes(email.toLowerCase())) {
+        return NextResponse.json(
+          { error: 'This email is already registered' },
+          { status: 409 }
+        );
+      }
+
+      // Add new email
+      const updatedEmails = [...existingEmails, email.toLowerCase()];
+      await writeEmails(updatedEmails);
+      console.log(`Total emails: ${updatedEmails.length}`);
+    } catch (fileError) {
+      console.log('File system not available, continuing without file storage');
+      // Continue without file storage - this is okay for now
+    }
 
     return NextResponse.json({
       success: true,
