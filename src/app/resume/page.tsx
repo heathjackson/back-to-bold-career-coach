@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import EmailCollector from "@/components/EmailCollector";
 
 export default function ResumePage() {
   const [form, setForm] = useState({
@@ -10,7 +11,17 @@ export default function ResumePage() {
   });
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
+  const [showEmailCollector, setShowEmailCollector] = useState(false);
+  const [hasEmail, setHasEmail] = useState(false);
   const outputRef = useRef<HTMLDivElement>(null);
+
+  // Check if user already has email
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) {
+      setHasEmail(true);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,6 +29,18 @@ export default function ResumePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if user has email, if not show email collector
+    if (!hasEmail) {
+      setShowEmailCollector(true);
+      return;
+    }
+
+    // Proceed with form submission
+    await submitForm();
+  };
+
+  const submitForm = async () => {
     setLoading(true);
     setOutput("");
     try {
@@ -33,6 +56,13 @@ export default function ResumePage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEmailCollected = (email: string) => {
+    setHasEmail(true);
+    setShowEmailCollector(false);
+    // Automatically submit the form after email is collected
+    submitForm();
   };
 
   const handleCopy = () => {
@@ -119,10 +149,34 @@ export default function ResumePage() {
               </div>
             </div>
             <div ref={outputRef} className="prose prose-lg max-w-none text-gray-800 bg-white">
-              <ReactMarkdown>{output}</ReactMarkdown>
+              <div className="bg-gray-50 rounded-lg p-6 border-l-4 border-cyan-500">
+                <ReactMarkdown 
+                  components={{
+                    h1: ({children}) => <h1 className="text-2xl font-bold text-gray-900 mb-4">{children}</h1>,
+                    h2: ({children}) => <h2 className="text-xl font-semibold text-gray-800 mb-3 mt-6">{children}</h2>,
+                    h3: ({children}) => <h3 className="text-lg font-semibold text-gray-800 mb-2 mt-4">{children}</h3>,
+                    p: ({children}) => <p className="text-gray-700 mb-3 leading-relaxed">{children}</p>,
+                    ul: ({children}) => <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700">{children}</ul>,
+                    ol: ({children}) => <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700">{children}</ol>,
+                    li: ({children}) => <li className="text-gray-700">{children}</li>,
+                    strong: ({children}) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                    em: ({children}) => <em className="italic text-gray-800">{children}</em>,
+                    blockquote: ({children}) => <blockquote className="border-l-4 border-cyan-300 pl-4 italic text-gray-600 mb-4">{children}</blockquote>,
+                  }}
+                >
+                  {output}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         )}
+
+        {/* Email Collector Modal */}
+        <EmailCollector
+          isOpen={showEmailCollector}
+          onClose={() => setShowEmailCollector(false)}
+          onEmailCollected={handleEmailCollected}
+        />
       </div>
     </div>
   );

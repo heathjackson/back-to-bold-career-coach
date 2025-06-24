@@ -10,12 +10,23 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { experience, education, skills, interests, preferences } = body;
+    const { 
+      experience, 
+      education, 
+      skills, 
+      interests, 
+      preferences,
+      breakReason,
+      returnMotivation,
+      timeAvailability,
+      locationPreference,
+      salaryExpectations
+    } = body;
 
     // Validate required fields
     if (!experience || !education || !skills || !interests || !preferences) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'All required fields are missing' },
         { status: 400 }
       );
     }
@@ -32,13 +43,31 @@ export async function POST(request: NextRequest) {
     console.log('API Key starts with:', process.env.OPENAI_API_KEY?.substring(0, 10) + '...');
     console.log('API Key length:', process.env.OPENAI_API_KEY?.length);
 
-    // Generate prompt using the existing function
-    const prompt = generateCareerPathPrompt({
-      pastExperience: `${experience} (Education: ${education})`,
-      skills,
-      interests,
-      jobTypes: preferences,
-    });
+    // Create a comprehensive prompt that includes all conversational data
+    let comprehensivePrompt = `Career Path Assessment for Return-to-Work Professional
+
+BACKGROUND:
+- Previous Experience: ${experience}
+- Education: ${education}
+- Career Break Reason: ${breakReason || 'Not specified'}
+- Return Motivation: ${returnMotivation || 'Not specified'}
+
+CURRENT SITUATION:
+- Key Skills: ${skills}
+- Work Preferences: ${interests}
+- Industry/Role Interests: ${preferences}
+- Timeline: ${timeAvailability || 'Not specified'}
+- Location Preferences: ${locationPreference || 'Not specified'}
+- Salary Expectations: ${salaryExpectations || 'Not specified'}
+
+Please provide:
+1. 3-4 specific job titles that would be a good fit
+2. 2-3 industries or company types to target
+3. Specific strategies for their job search
+4. How to address their career break positively
+5. Next steps to take immediately
+
+Make your response encouraging, practical, and specific. Focus on opportunities that align with their skills and preferences while being realistic about their timeline and location constraints.`;
 
     console.log('About to call OpenAI...');
 
@@ -48,14 +77,14 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: "system",
-          content: "You are a career coach specializing in helping moms return to the workforce. Provide encouraging, practical advice with specific job titles and company types."
+          content: "You are a career coach specializing in helping professionals return to the workforce after career breaks. Provide encouraging, practical advice with specific job titles, company types, and actionable next steps. Be warm, supportive, and realistic."
         },
         {
           role: "user",
-          content: prompt
+          content: comprehensivePrompt
         }
       ],
-      max_tokens: 1000,
+      max_tokens: 1200,
       temperature: 0.7,
     });
 

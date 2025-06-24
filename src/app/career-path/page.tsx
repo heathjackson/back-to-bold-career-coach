@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import EmailCollector from "@/components/EmailCollector";
 
 interface FormData {
   experience: string;
@@ -8,6 +10,22 @@ interface FormData {
   interests: string;
   preferences: string;
   education: string;
+  breakReason?: string;
+  returnMotivation?: string;
+  timeAvailability?: string;
+  locationPreference?: string;
+  salaryExpectations?: string;
+}
+
+interface Question {
+  id: string;
+  text: string;
+  placeholder: string;
+  required: boolean;
+  type: 'text' | 'textarea';
+  rows?: number;
+  conditional?: boolean; // Whether this question should be skipped based on previous answers
+  condition?: (formData: FormData) => boolean; // Function to determine if question should be shown
 }
 
 export default function CareerPathPage() {
@@ -19,10 +37,113 @@ export default function CareerPathPage() {
     education: "",
   });
 
+  const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [gptResponse, setGptResponse] = useState<string>("");
+  const [showEmailCollector, setShowEmailCollector] = useState(false);
+  const [hasEmail, setHasEmail] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState<string[]>([]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  // Check if user already has email
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) {
+      setHasEmail(true);
+    }
+  }, []);
+
+  // Define all possible questions upfront
+  const allQuestions: Question[] = [
+    {
+      id: "experience",
+      text: "Hi! I'm here to help you find your next career path. Let's start with what you did before your career break. What was your previous role?",
+      placeholder: "e.g., I was a Marketing Manager at a tech company, or I worked as a teacher for 8 years...",
+      required: true,
+      type: 'textarea',
+      rows: 3
+    },
+    {
+      id: "breakReason",
+      text: "What led to your career break?",
+      placeholder: "e.g., I took time off to raise my children, I was caring for a family member, I wanted to travel...",
+      required: true,
+      type: 'textarea',
+      rows: 3
+    },
+    {
+      id: "returnMotivation",
+      text: "What's motivating you to return to work now?",
+      placeholder: "e.g., I'm ready for a new challenge, I want to contribute financially, I miss the social aspect...",
+      required: true,
+      type: 'textarea',
+      rows: 3
+    },
+    {
+      id: "education",
+      text: "What's your highest level of education?",
+      placeholder: "e.g., Bachelor's degree in Business, Master's in Education, High school with certifications...",
+      required: true,
+      type: 'textarea',
+      rows: 2
+    },
+    {
+      id: "skills",
+      text: "What are 2-3 skills you feel most confident in?",
+      placeholder: "e.g., project management, communication, data analysis, leadership, problem-solving...",
+      required: true,
+      type: 'textarea',
+      rows: 2
+    },
+    {
+      id: "interests",
+      text: "What kind of work environment and schedule are you looking for?",
+      placeholder: "e.g., remote work, flexible hours, part-time, team-based projects, independent work...",
+      required: true,
+      type: 'textarea',
+      rows: 2
+    },
+    {
+      id: "preferences",
+      text: "What industries or types of roles appeal to you most?",
+      placeholder: "e.g., technology, healthcare, education, consulting, non-profit, remote-first companies...",
+      required: true,
+      type: 'textarea',
+      rows: 2
+    },
+    {
+      id: "timeAvailability",
+      text: "How soon are you looking to return to work?",
+      placeholder: "e.g., immediately, within 3 months, flexible timeline, part-time to start...",
+      required: true,
+      type: 'textarea',
+      rows: 2
+    },
+    {
+      id: "locationPreference",
+      text: "Where are you located and what are your location preferences?",
+      placeholder: "e.g., I'm in Austin, TX and prefer remote or hybrid work, I'm open to relocation...",
+      required: true,
+      type: 'textarea',
+      rows: 2
+    }
+  ];
+
+  // Get the current visible questions (filter out conditional ones that shouldn't be shown)
+  const getVisibleQuestions = (): Question[] => {
+    return allQuestions.filter(question => {
+      if (!question.conditional) return true;
+      if (question.condition) {
+        return question.condition(formData);
+      }
+      return true;
+    });
+  };
+
+  const visibleQuestions = getVisibleQuestions();
+  const currentQuestion = visibleQuestions[currentStep];
+  const totalQuestions = visibleQuestions.length;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -30,8 +151,38 @@ export default function CareerPathPage() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleNext = () => {
+    if (currentQuestion && formData[currentQuestion.id as keyof FormData]) {
+      // Add to conversation history
+      setConversationHistory(prev => [...prev, `Q: ${currentQuestion.text}`, `A: ${formData[currentQuestion.id as keyof FormData]}`]);
+      
+      if (currentStep < totalQuestions - 1) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        // We've reached the end, submit the form
+        handleSubmit();
+      }
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Check if user has email, if not show email collector
+    if (!hasEmail) {
+      setShowEmailCollector(true);
+      return;
+    }
+
+    // Proceed with form submission
+    await submitForm();
+  };
+
+  const submitForm = async () => {
     setIsLoading(true);
     setGptResponse("");
 
@@ -67,6 +218,26 @@ export default function CareerPathPage() {
     }
   };
 
+  const handleEmailCollected = (email: string) => {
+    setHasEmail(true);
+    setShowEmailCollector(false);
+    // Automatically submit the form after email is collected
+    submitForm();
+  };
+
+  const resetConversation = () => {
+    setFormData({
+      experience: "",
+      skills: "",
+      interests: "",
+      preferences: "",
+      education: "",
+    });
+    setCurrentStep(0);
+    setConversationHistory([]);
+    setGptResponse("");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,123 +246,136 @@ export default function CareerPathPage() {
             Career Path Assessment
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Let&apos;s explore your career journey and discover opportunities that align with your experience and goals.
+            Let's have a conversation about your career journey and discover opportunities that align with your experience and goals.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Question 1 */}
-            <div>
-              <label htmlFor="experience" className="block text-lg font-semibold text-gray-900 mb-3">
-                1. What did you do before your career break?
-              </label>
-              <textarea
-                id="experience"
-                name="experience"
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
-                placeholder="Describe your previous role, responsibilities, and achievements..."
-                value={formData.experience}
-                onChange={handleInputChange}
-                required
-              />
+        {!gptResponse ? (
+          <div className="bg-white rounded-lg shadow-md p-8">
+            {/* Progress indicator */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                <span>Question {currentStep + 1} of {totalQuestions}</span>
+                <span>{Math.round(((currentStep + 1) / totalQuestions) * 100)}% complete</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-cyan-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${((currentStep + 1) / totalQuestions) * 100}%` }}
+                ></div>
+              </div>
             </div>
 
-            {/* Question 2 */}
-            <div>
-              <label htmlFor="education" className="block text-lg font-semibold text-gray-900 mb-3">
-                2. What is your highest level of education achieved?
-              </label>
-              <textarea
-                id="education"
-                name="education"
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
-                placeholder="e.g., Bachelor's degree in Business Administration, Master's in Education, High school diploma with certifications..."
-                value={formData.education}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+            {/* Current question */}
+            {currentQuestion && (
+              <div className="space-y-6">
+                <div className="bg-cyan-50 rounded-lg p-6">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                    {currentQuestion.text}
+                  </h2>
+                  
+                  {currentQuestion.type === 'textarea' ? (
+                    <textarea
+                      name={currentQuestion.id}
+                      rows={currentQuestion.rows || 3}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
+                      placeholder={currentQuestion.placeholder}
+                      value={formData[currentQuestion.id as keyof FormData] || ""}
+                      onChange={handleInputChange}
+                      required={currentQuestion.required}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      name={currentQuestion.id}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
+                      placeholder={currentQuestion.placeholder}
+                      value={formData[currentQuestion.id as keyof FormData] || ""}
+                      onChange={handleInputChange}
+                      required={currentQuestion.required}
+                    />
+                  )}
+                </div>
 
-            {/* Question 3 */}
-            <div>
-              <label htmlFor="skills" className="block text-lg font-semibold text-gray-900 mb-3">
-                3. What are 2–3 skills you feel confident in?
-              </label>
-              <textarea
-                id="skills"
-                name="skills"
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
-                placeholder="e.g., project management, communication, data analysis, leadership..."
-                value={formData.skills}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+                {/* Navigation buttons */}
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={handlePrevious}
+                    disabled={currentStep === 0}
+                    className="bg-gray-200 text-gray-800 py-3 px-6 rounded-md font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!formData[currentQuestion.id as keyof FormData] || isLoading}
+                    className="bg-cyan-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? "Thinking..." : currentStep === totalQuestions - 1 ? "Get My Results" : "Next"}
+                  </button>
+                </div>
+              </div>
+            )}
 
-            {/* Question 4 */}
-            <div>
-              <label htmlFor="interests" className="block text-lg font-semibold text-gray-900 mb-3">
-                4. What kind of work are you interested in now?
-              </label>
-              <textarea
-                id="interests"
-                name="interests"
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
-                placeholder="e.g., remote work, flexible hours, team-based projects, independent work..."
-                value={formData.interests}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            {/* Question 5 */}
-            <div>
-              <label htmlFor="preferences" className="block text-lg font-semibold text-gray-900 mb-3">
-                5. What industries or job types appeal to you?
-              </label>
-              <textarea
-                id="preferences"
-                name="preferences"
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
-                placeholder="e.g., technology, healthcare, education, consulting, non-profit..."
-                value={formData.preferences}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            {/* Submit Button */}
-            <div className="pt-6">
+            {/* Conversation history */}
+            {conversationHistory.length > 0 && (
+              <div className="mt-8 border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Our Conversation</h3>
+                <div className="space-y-3 max-h-60 overflow-y-auto">
+                  {conversationHistory.map((entry, index) => (
+                    <div key={index} className="text-sm text-gray-600">
+                      {entry}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                {gptResponse.startsWith('❌') || gptResponse.startsWith('🚫') || gptResponse.startsWith('🔑') ? '⚠️ Error' : '🔍 Career Suggestions'}
+              </h2>
               <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-cyan-600 text-white py-4 px-6 rounded-md text-lg font-semibold hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={resetConversation}
+                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-semibold hover:bg-gray-300 transition-colors"
               >
-                {isLoading ? "Thinking..." : "Find My Fit"}
+                Start Over
               </button>
             </div>
-          </form>
-        </div>
-
-        {/* GPT Response Section */}
-        {gptResponse && (
-          <div className="mt-8 bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              {gptResponse.startsWith('❌') || gptResponse.startsWith('🚫') || gptResponse.startsWith('🔑') ? '⚠️ Error' : '🔍 Career Suggestions'}
-            </h2>
             <div className="prose prose-lg max-w-none">
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                {gptResponse}
+              <div className="bg-gray-50 rounded-lg p-6 border-l-4 border-cyan-500">
+                <ReactMarkdown 
+                  components={{
+                    h1: ({children}) => <h1 className="text-2xl font-bold text-gray-900 mb-4">{children}</h1>,
+                    h2: ({children}) => <h2 className="text-xl font-semibold text-gray-800 mb-3 mt-6">{children}</h2>,
+                    h3: ({children}) => <h3 className="text-lg font-semibold text-gray-800 mb-2 mt-4">{children}</h3>,
+                    p: ({children}) => <p className="text-gray-700 mb-3 leading-relaxed">{children}</p>,
+                    ul: ({children}) => <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700">{children}</ul>,
+                    ol: ({children}) => <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700">{children}</ol>,
+                    li: ({children}) => <li className="text-gray-700">{children}</li>,
+                    strong: ({children}) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                    em: ({children}) => <em className="italic text-gray-800">{children}</em>,
+                    blockquote: ({children}) => <blockquote className="border-l-4 border-cyan-300 pl-4 italic text-gray-600 mb-4">{children}</blockquote>,
+                  }}
+                >
+                  {gptResponse}
+                </ReactMarkdown>
               </div>
             </div>
           </div>
         )}
+
+        {/* Email Collector Modal */}
+        <EmailCollector
+          isOpen={showEmailCollector}
+          onClose={() => setShowEmailCollector(false)}
+          onEmailCollected={handleEmailCollected}
+        />
       </div>
     </div>
   );
