@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       const updatedEmails = [...existingEmails, email.toLowerCase()];
       await writeEmails(updatedEmails);
       console.log(`Total emails: ${updatedEmails.length}`);
-    } catch (fileError) {
+    } catch {
       console.log('File system not available, continuing without file storage');
       // Continue without file storage - this is okay for now
     }
