@@ -542,7 +542,7 @@ function extractIndustryKeywords(jobDescription: string): string[] {
 }
 
 function extractKeywords(jobDescription: string): string[] {
-  // Focus only on actual technical skills, tools, and meaningful job requirements
+  // Only actual technical skills, programming languages, and tools
   const technicalSkills = [
     // Programming Languages
     "java", "python", "javascript", "typescript", "c#", "c++", "php", "ruby", "go", "rust", "swift", "kotlin", "scala", "r", "matlab", "vb", "asp",
@@ -584,48 +584,163 @@ function extractKeywords(jobDescription: string): string[] {
     "microservices", "api", "rest", "graphql", "soap", "websocket", "grpc", "message queue", "rabbitmq", "kafka", "redis", "memcached", "cdn", "load balancer", "reverse proxy", "nginx", "apache"
   ];
 
-  // Words to explicitly exclude (job titles, section headers, general business terms)
-  const excludeWords = new Set([
-    // Job titles and positions
-    "entry", "level", "entrylevel", "senior", "junior", "lead", "principal", "architect", "manager", "director", "vp", "cto", "ceo", "engineer", "developer", "programmer", "analyst", "consultant", "specialist", "coordinator", "associate", "assistant",
-    
-    // Section headers
-    "overview", "position", "qualifications", "requirements", "responsibilities", "duties", "location", "start", "date", "salary", "benefits", "compensation", "about", "company", "team", "department", "division", "practice", "group",
-    
-    // General business terms
-    "enterprise", "modernization", "core", "quintessential", "clients", "business", "agility", "digital", "world", "domain", "experiences", "investment", "talent", "integrated", "platforms", "solutions", "envision", "build", "modernize", "run", "innovative", "efficient", "industries", "career", "training", "program", "learn", "latest", "technical", "skills", "degree", "equivalent", "preferred", "majors", "include", "computer", "science", "software", "engineering", "candidate", "should", "possess", "strong", "application", "development", "technologies", "framework", "demonstrated", "experiences", "development", "database", "experience", "computing", "understanding", "methodologies", "self", "motivated", "individuals", "analytical", "troubleshooting", "problem", "solving", "passion", "appetite", "newer", "excellent", "interpersonal", "communication", "actively", "participates", "meetings", "discussions", "specialist", "oriented", "analysis", "design", "using", "common", "patterns", "ability", "work", "collaboratively", "global", "project", "teams", "develop", "create", "modify", "general", "application", "specialized", "programs", "interaction", "coordination", "offshore", "members", "various", "specific", "tasks", "enhancements", "maintain", "systems", "monitoring", "identifying", "correcting", "defects", "providing", "expertise", "full", "lifecycle", "concept", "testing", "design", "deliver", "high", "volume", "low", "latency", "applications", "mission", "critical", "write", "well", "designed", "testable", "efficient", "code", "ensure", "designs", "compliance", "specifications", "support", "continuous", "improvement", "investigating", "alternatives", "communicating", "architectural", "review", "new", "hires", "deployed", "sites", "locations", "discussed", "application", "process", "reasonable", "efforts", "accommodate", "preference", "note", "final", "assignments", "based", "needs", "regional", "relocation", "required", "start", "dates", "cohorts", "attempt", "honor", "candidate", "preferences", "availability", "determine", "assignment", "exact", "communicated", "enough", "time", "plan", "effectively"
-  ]);
-
-  const words = jobDescription.toLowerCase().split(/\s+/);
-  const uniqueWords = [...new Set(words)];
+  // Extract only exact matches from the technical skills list
+  const foundKeywords: string[] = [];
   
-  // Filter to only include actual technical skills and meaningful terms
-  const filteredKeywords = uniqueWords.filter(word => {
-    // Remove punctuation and clean the word
-    const cleanWord = word.replace(/[^\w]/g, '');
-    
-    // Must be at least 3 characters long
-    if (cleanWord.length < 3) return false;
-    
-    // Must not be in exclude list
-    if (excludeWords.has(cleanWord)) return false;
-    
-    // Must be a technical skill or meaningful term
-    const isTechnicalSkill = technicalSkills.some(skill => 
-      cleanWord.includes(skill) || skill.includes(cleanWord)
-    );
-    
-    return isTechnicalSkill;
+  // Check for exact matches in the job description using word boundaries
+  technicalSkills.forEach(skill => {
+    // Use word boundary regex to ensure exact matches only
+    const regex = new RegExp(`\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    if (regex.test(jobDescription)) {
+      foundKeywords.push(skill);
+    }
   });
   
-  // Clean up and return only the most relevant technical keywords
-  const cleanedKeywords = filteredKeywords
-    .map(keyword => keyword.replace(/[^\w]/g, '')) // Remove any remaining punctuation
-    .filter(keyword => keyword.length >= 3) // Ensure minimum length
-    .filter((keyword, index, arr) => arr.indexOf(keyword) === index) // Remove duplicates
-    .slice(0, 8); // Limit to 8 most relevant technical keywords
+  // Also check for common variations and abbreviations with strict matching
+  const variations = {
+    "java": ["javase", "javaee", "javabeans"],
+    "c#": ["csharp", "dotnet"],
+    "react": ["reactjs", "react.js"],
+    "angular": ["angularjs", "angular.js"],
+    "vue": ["vuejs", "vue.js"],
+    "node": ["nodejs", "node.js"],
+    "spring": ["springboot", "spring framework"],
+    "aws": ["amazon web services"],
+    "azure": ["microsoft azure"],
+    "gcp": ["google cloud", "google cloud platform"],
+    "sql": ["mysql", "postgresql", "sqlite"],
+    "nosql": ["mongodb", "cassandra"],
+    "api": ["rest api", "graphql"],
+    "microservices": ["microservice"],
+    "agile": ["scrum", "kanban"],
+    "devops": ["ci/cd", "continuous integration"],
+    "machine learning": ["ml", "ai", "artificial intelligence"],
+    "docker": ["containerization"],
+    "kubernetes": ["k8s"],
+    "git": ["github", "gitlab"],
+    "jenkins": ["ci/cd"],
+    "terraform": ["infrastructure as code"],
+    "selenium": ["automated testing"],
+    "junit": ["unit testing"],
+    "pytest": ["python testing"],
+    "tableau": ["data visualization"],
+    "powerbi": ["power bi", "business intelligence"],
+    "salesforce": ["crm"],
+    "seo": ["search engine optimization"],
+    "sem": ["search engine marketing"],
+    "ppc": ["pay per click"],
+    "cybersecurity": ["security", "penetration testing"],
+    "ios": ["iphone", "swift"],
+    "android": ["kotlin"],
+    "react native": ["mobile development"],
+    "flutter": ["dart"],
+    "nginx": ["web server"],
+    "apache": ["httpd"],
+    "redis": ["cache"],
+    "elasticsearch": ["elastic search"],
+    "kafka": ["message queue"],
+    "rabbitmq": ["message broker"],
+    "spark": ["apache spark"],
+    "hadoop": ["big data"],
+    "airflow": ["apache airflow"],
+    "tensorflow": ["tf"],
+    "pytorch": ["torch"],
+    "opencv": ["computer vision"],
+    "spacy": ["nlp"],
+    "nltk": ["natural language processing"],
+    "oauth": ["authentication"],
+    "jwt": ["json web token"],
+    "ssl": ["tls", "encryption"],
+    "vpn": ["virtual private network"],
+    "firewall": ["network security"],
+    "cdn": ["content delivery network"],
+    "load balancer": ["load balancing"],
+    "reverse proxy": ["proxy"],
+    "message queue": ["mq"],
+    "websocket": ["real-time"],
+    "grpc": ["remote procedure call"],
+    "soap": ["simple object access protocol"],
+    "graphql": ["query language"],
+    "rest": ["representational state transfer"],
+    "etl": ["extract transform load"],
+    "data warehousing": ["warehouse"],
+    "data modeling": ["data model"],
+    "data visualization": ["visualization"],
+    "dashboard": ["reporting"],
+    "analytics": ["data analytics"],
+    "big data": ["large scale data"],
+    "unit testing": ["unit test"],
+    "integration testing": ["integration test"],
+    "end-to-end testing": ["e2e testing"],
+    "quality assurance": ["qa"],
+    "business intelligence": ["bi"],
+    "responsive design": ["responsive"],
+    "web accessibility": ["accessibility", "wcag"],
+    "progressive web apps": ["pwa"],
+    "xamarin": ["cross-platform"],
+    "cordova": ["phonegap"],
+    "phonegap": ["cordova"],
+    "swiftui": ["swift ui"],
+    "jetpack": ["android jetpack"],
+    "play": ["play framework"],
+    "shiny": ["r shiny"],
+    "scikit": ["scikit-learn"],
+    "keras": ["deep learning"],
+    "penetration testing": ["pen testing"],
+    "ethical hacking": ["security testing"],
+    "network security": ["networking"],
+    "authentication": ["auth"],
+    "authorization": ["authz"],
+    "encryption": ["cryptography"],
+    "virtual private network": ["vpn"],
+    "content delivery network": ["cdn"],
+    "load balancing": ["load balancer"],
+    "remote procedure call": ["rpc"],
+    "simple object access protocol": ["soap"],
+    "query language": ["ql"],
+    "representational state transfer": ["rest"],
+    "extract transform load": ["etl"],
+    "warehouse": ["data warehouse"],
+    "data model": ["modeling"],
+    "visualization": ["data viz"],
+    "reporting": ["reports"],
+    "data analytics": ["analytics"],
+    "large scale data": ["big data"],
+    "unit test": ["unit testing"],
+    "integration test": ["integration testing"],
+    "e2e testing": ["end-to-end testing"],
+    "data viz": ["visualization"],
+    "reports": ["reporting"],
+    "cross-platform": ["xamarin"],
+    "nlp library": ["spacy"],
+    "natural language toolkit": ["nltk"],
+    "pen testing": ["penetration testing"],
+    "security testing": ["ethical hacking"],
+    "networking": ["network security"],
+    "auth": ["authentication"],
+    "authz": ["authorization"],
+    "cryptography": ["encryption"],
+    "rpc": ["remote procedure call"],
+    "ql": ["query language"],
+    "data warehouse": ["warehouse"],
+    "modeling": ["data modeling"]
+  };
+
+  // Check for variations with strict word boundary matching
+  Object.entries(variations).forEach(([mainTerm, variants]) => {
+    variants.forEach(variant => {
+      // Use word boundary regex to ensure exact matches only
+      const regex = new RegExp(`\\b${variant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      if (regex.test(jobDescription) && !foundKeywords.includes(mainTerm)) {
+        foundKeywords.push(mainTerm);
+      }
+    });
+  });
   
-  return cleanedKeywords;
+  // Remove duplicates and limit to 8 most relevant
+  const uniqueKeywords = [...new Set(foundKeywords)].slice(0, 8);
+  
+  return uniqueKeywords;
 }
 
 function checkFormatting(resume: string): number {
