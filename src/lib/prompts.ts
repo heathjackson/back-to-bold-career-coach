@@ -542,121 +542,64 @@ function extractIndustryKeywords(jobDescription: string): string[] {
 }
 
 function extractKeywords(jobDescription: string): string[] {
-  // Common words to exclude (stop words and non-meaningful terms)
-  const stopWords = new Set([
-    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
-    'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
-    'will', 'would', 'could', 'should', 'may', 'might', 'can', 'must', 'shall',
-    'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
-    'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their',
-    'mine', 'yours', 'his', 'hers', 'ours', 'theirs',
-    'who', 'what', 'where', 'when', 'why', 'how', 'which', 'whose', 'whom',
-    'if', 'then', 'else', 'when', 'while', 'before', 'after', 'until', 'since',
-    'about', 'above', 'below', 'under', 'over', 'between', 'among', 'through',
-    'during', 'before', 'after', 'within', 'without', 'against', 'toward', 'towards',
-    'into', 'onto', 'upon', 'from', 'up', 'down', 'out', 'off', 'away', 'back',
-    'here', 'there', 'where', 'everywhere', 'nowhere', 'somewhere', 'anywhere',
-    'now', 'then', 'today', 'tomorrow', 'yesterday', 'always', 'never', 'often',
-    'sometimes', 'usually', 'rarely', 'seldom', 'frequently', 'occasionally',
-    'very', 'really', 'quite', 'rather', 'too', 'so', 'much', 'many', 'few', 'little',
-    'more', 'most', 'less', 'least', 'better', 'best', 'worse', 'worst',
-    'good', 'bad', 'big', 'small', 'large', 'huge', 'tiny', 'new', 'old', 'young',
-    'first', 'last', 'next', 'previous', 'current', 'recent', 'early', 'late',
-    'high', 'low', 'long', 'short', 'wide', 'narrow', 'thick', 'thin',
-    'strong', 'weak', 'hard', 'soft', 'easy', 'difficult', 'simple', 'complex',
-    'important', 'necessary', 'essential', 'required', 'needed', 'wanted', 'desired',
-    'available', 'possible', 'impossible', 'likely', 'unlikely', 'certain', 'uncertain',
-    'same', 'different', 'similar', 'various', 'several', 'multiple', 'single',
-    'each', 'every', 'all', 'any', 'some', 'none', 'both', 'either', 'neither',
-    'one', 'two', 'three', 'first', 'second', 'third', 'next', 'previous',
-    'other', 'another', 'additional', 'extra', 'more', 'less', 'fewer',
-    'team', 'group', 'company', 'organization', 'department', 'division',
-    'work', 'job', 'position', 'role', 'responsibility', 'duty', 'task',
-    'project', 'program', 'initiative', 'effort', 'endeavor', 'undertaking',
-    'experience', 'background', 'history', 'record', 'track', 'performance',
-    'skill', 'ability', 'capability', 'competency', 'expertise', 'knowledge',
-    'understanding', 'comprehension', 'awareness', 'familiarity', 'proficiency',
-    'level', 'degree', 'extent', 'amount', 'quantity', 'number', 'count',
-    'time', 'period', 'duration', 'length', 'span', 'interval', 'moment',
-    'year', 'month', 'week', 'day', 'hour', 'minute', 'second',
-    'people', 'person', 'individual', 'employee', 'staff', 'member', 'colleague',
-    'manager', 'leader', 'supervisor', 'director', 'executive', 'officer',
-    'client', 'customer', 'user', 'stakeholder', 'partner', 'vendor', 'supplier',
-    'data', 'information', 'detail', 'fact', 'figure', 'statistic', 'metric',
-    'result', 'outcome', 'effect', 'impact', 'influence', 'consequence',
-    'goal', 'objective', 'target', 'aim', 'purpose', 'intention', 'plan',
-    'strategy', 'approach', 'method', 'technique', 'process', 'procedure',
-    'system', 'platform', 'tool', 'technology', 'software', 'application',
-    'development', 'implementation', 'deployment', 'integration', 'configuration',
-    'management', 'administration', 'coordination', 'oversight', 'supervision',
-    'communication', 'collaboration', 'cooperation', 'partnership', 'relationship',
-    'analysis', 'assessment', 'evaluation', 'review', 'examination', 'investigation',
-    'research', 'study', 'survey', 'poll', 'questionnaire', 'interview',
-    'report', 'document', 'record', 'file', 'database', 'repository',
-    'quality', 'standard', 'requirement', 'specification', 'guideline', 'policy',
-    'compliance', 'regulation', 'law', 'rule', 'procedure', 'protocol',
-    'safety', 'security', 'protection', 'safeguard', 'precaution', 'measure',
-    'training', 'education', 'learning', 'development', 'improvement', 'enhancement',
-    'support', 'assistance', 'help', 'aid', 'service', 'maintenance', 'care',
-    'problem', 'issue', 'challenge', 'difficulty', 'obstacle', 'barrier',
-    'solution', 'resolution', 'fix', 'repair', 'correction', 'improvement',
-    'success', 'achievement', 'accomplishment', 'milestone', 'victory', 'win',
-    'failure', 'mistake', 'error', 'fault', 'defect', 'flaw', 'weakness',
-    'opportunity', 'chance', 'possibility', 'potential', 'prospect', 'future',
-    'growth', 'expansion', 'increase', 'improvement', 'progress', 'advancement',
-    'change', 'modification', 'adjustment', 'alteration', 'transformation',
-    'innovation', 'creativity', 'originality', 'uniqueness', 'distinction',
-    'excellence', 'superiority', 'advantage', 'benefit', 'value', 'worth',
-    'cost', 'expense', 'budget', 'financial', 'economic', 'monetary',
-    'market', 'industry', 'sector', 'field', 'domain', 'area', 'region',
-    'location', 'place', 'site', 'venue', 'facility', 'office', 'building',
-    'environment', 'atmosphere', 'culture', 'climate', 'setting', 'context'
+  // Focus only on actual technical skills, tools, and meaningful job requirements
+  const technicalSkills = [
+    // Programming Languages
+    "java", "python", "javascript", "typescript", "c#", "c++", "php", "ruby", "go", "rust", "swift", "kotlin", "scala", "r", "matlab", "vb", "asp",
+    
+    // Frameworks & Libraries
+    "react", "angular", "vue", "node", "spring", "net", "django", "flask", "express", "laravel", "rails", "gin", "actix", "swiftui", "jetpack", "play", "spark", "shiny", "tensorflow", "pytorch", "scikit",
+    
+    // Databases & Data
+    "sql", "nosql", "mongodb", "postgresql", "mysql", "redis", "elasticsearch", "oracle", "sql server", "sqlite", "cassandra", "dynamodb", "firebase",
+    
+    // Cloud & DevOps
+    "aws", "azure", "gcp", "docker", "kubernetes", "jenkins", "git", "github", "gitlab", "openshift", "terraform", "ansible", "chef", "puppet", "ci/cd", "devops",
+    
+    // Tools & Platforms
+    "tableau", "powerbi", "salesforce", "hubspot", "marketo", "pardot", "jira", "confluence", "slack", "teams", "figma", "sketch", "adobe", "photoshop", "illustrator",
+    
+    // Analytics & Marketing
+    "seo", "sem", "ppc", "google analytics", "adwords", "facebook ads", "google ads", "bing ads", "linkedin ads", "twitter ads", "tiktok ads",
+    
+    // Methodologies
+    "agile", "scrum", "kanban", "lean", "six sigma", "waterfall", "spiral", "rad", "xp", "crystal",
+    
+    // AI & ML
+    "machine learning", "ai", "ml", "nlp", "computer vision", "deep learning", "neural networks", "tensorflow", "pytorch", "scikit-learn", "keras", "opencv", "spacy", "nltk",
+    
+    // Security & Networking
+    "cybersecurity", "penetration testing", "ethical hacking", "network security", "firewall", "vpn", "ssl", "tls", "encryption", "authentication", "authorization", "oauth", "jwt",
+    
+    // Mobile & Web
+    "ios", "android", "react native", "flutter", "xamarin", "cordova", "phonegap", "progressive web apps", "pwa", "responsive design", "web accessibility", "wcag",
+    
+    // Testing & QA
+    "unit testing", "integration testing", "end-to-end testing", "selenium", "cypress", "jest", "mocha", "junit", "pytest", "testng", "cucumber", "bdd", "tdd", "qa", "quality assurance",
+    
+    // Business Intelligence & Data
+    "bi", "business intelligence", "data warehousing", "etl", "data modeling", "data visualization", "dashboard", "reporting", "analytics", "big data", "hadoop", "spark", "kafka", "airflow",
+    
+    // Specific Technologies
+    "microservices", "api", "rest", "graphql", "soap", "websocket", "grpc", "message queue", "rabbitmq", "kafka", "redis", "memcached", "cdn", "load balancer", "reverse proxy", "nginx", "apache"
+  ];
+
+  // Words to explicitly exclude (job titles, section headers, general business terms)
+  const excludeWords = new Set([
+    // Job titles and positions
+    "entry", "level", "entrylevel", "senior", "junior", "lead", "principal", "architect", "manager", "director", "vp", "cto", "ceo", "engineer", "developer", "programmer", "analyst", "consultant", "specialist", "coordinator", "associate", "assistant",
+    
+    // Section headers
+    "overview", "position", "qualifications", "requirements", "responsibilities", "duties", "location", "start", "date", "salary", "benefits", "compensation", "about", "company", "team", "department", "division", "practice", "group",
+    
+    // General business terms
+    "enterprise", "modernization", "core", "quintessential", "clients", "business", "agility", "digital", "world", "domain", "experiences", "investment", "talent", "integrated", "platforms", "solutions", "envision", "build", "modernize", "run", "innovative", "efficient", "industries", "career", "training", "program", "learn", "latest", "technical", "skills", "degree", "equivalent", "preferred", "majors", "include", "computer", "science", "software", "engineering", "candidate", "should", "possess", "strong", "application", "development", "technologies", "framework", "demonstrated", "experiences", "development", "database", "experience", "computing", "understanding", "methodologies", "self", "motivated", "individuals", "analytical", "troubleshooting", "problem", "solving", "passion", "appetite", "newer", "excellent", "interpersonal", "communication", "actively", "participates", "meetings", "discussions", "specialist", "oriented", "analysis", "design", "using", "common", "patterns", "ability", "work", "collaboratively", "global", "project", "teams", "develop", "create", "modify", "general", "application", "specialized", "programs", "interaction", "coordination", "offshore", "members", "various", "specific", "tasks", "enhancements", "maintain", "systems", "monitoring", "identifying", "correcting", "defects", "providing", "expertise", "full", "lifecycle", "concept", "testing", "design", "deliver", "high", "volume", "low", "latency", "applications", "mission", "critical", "write", "well", "designed", "testable", "efficient", "code", "ensure", "designs", "compliance", "specifications", "support", "continuous", "improvement", "investigating", "alternatives", "communicating", "architectural", "review", "new", "hires", "deployed", "sites", "locations", "discussed", "application", "process", "reasonable", "efforts", "accommodate", "preference", "note", "final", "assignments", "based", "needs", "regional", "relocation", "required", "start", "dates", "cohorts", "attempt", "honor", "candidate", "preferences", "availability", "determine", "assignment", "exact", "communicated", "enough", "time", "plan", "effectively"
   ]);
-
-  // Meaningful keywords that indicate job requirements and skills
-  const meaningfulKeywords = [
-    "management", "leadership", "strategy", "analysis", "development", "implementation",
-    "coordination", "planning", "communication", "collaboration", "problem solving",
-    "project management", "data analysis", "customer service", "sales", "marketing",
-    "technical", "creative", "strategic", "operational", "financial", "administrative",
-    "agile", "scrum", "lean", "six sigma", "quality assurance", "risk management",
-    "budgeting", "forecasting", "reporting", "documentation", "training", "mentoring",
-    "recruitment", "hiring", "onboarding", "performance", "evaluation", "feedback",
-    "automation", "optimization", "streamlining", "efficiency", "productivity", "innovation",
-    "research", "design", "testing", "deployment", "maintenance", "support",
-    "compliance", "regulatory", "audit", "governance", "policies", "procedures",
-    "stakeholder", "client", "vendor", "partner", "relationship", "networking",
-    "presentation", "public speaking", "negotiation", "influence", "persuasion",
-    "critical thinking", "decision making", "problem solving", "troubleshooting",
-    "multitasking", "prioritization", "time management", "organization", "planning",
-    "teamwork", "collaboration", "cross-functional", "interdisciplinary", "diverse",
-    "remote", "virtual", "global", "international", "multicultural", "diversity",
-    "startup", "enterprise", "scale", "growth", "expansion", "transformation",
-    "digital", "online", "web", "mobile", "cloud", "saas", "platform",
-    "api", "integration", "database", "analytics", "bi", "reporting", "dashboard",
-    "crm", "erp", "hr", "finance", "operations", "logistics", "supply chain",
-    "customer", "user", "client", "stakeholder", "end-user", "consumer",
-    "revenue", "profit", "margin", "roi", "kpi", "metric", "measurement",
-    "improvement", "enhancement", "optimization", "efficiency", "effectiveness",
-    "quality", "excellence", "best practice", "standard", "benchmark", "baseline"
-  ];
-
-  // Technical skills and tools
-  const technicalTerms = [
-    "python", "java", "javascript", "typescript", "react", "angular", "vue", "node", "php", "ruby", "go", "rust", "swift", "kotlin", "scala", "r", "matlab",
-    "sql", "nosql", "mongodb", "postgresql", "mysql", "redis", "elasticsearch",
-    "aws", "azure", "gcp", "docker", "kubernetes", "jenkins", "git", "github", "gitlab",
-    "tableau", "powerbi", "salesforce", "hubspot", "marketo", "pardot",
-    "seo", "sem", "ppc", "google analytics", "adwords", "facebook ads",
-    "agile", "scrum", "kanban", "jira", "confluence", "slack", "teams",
-    "machine learning", "ai", "ml", "nlp", "computer vision", "deep learning",
-    "blockchain", "iot", "vr", "ar", "5g", "cybersecurity", "devops", "ci/cd"
-  ];
 
   const words = jobDescription.toLowerCase().split(/\s+/);
   const uniqueWords = [...new Set(words)];
   
-  // Filter out stop words and short words, keep meaningful keywords
+  // Filter to only include actual technical skills and meaningful terms
   const filteredKeywords = uniqueWords.filter(word => {
     // Remove punctuation and clean the word
     const cleanWord = word.replace(/[^\w]/g, '');
@@ -664,30 +607,23 @@ function extractKeywords(jobDescription: string): string[] {
     // Must be at least 3 characters long
     if (cleanWord.length < 3) return false;
     
-    // Must not be a stop word
-    if (stopWords.has(cleanWord)) return false;
+    // Must not be in exclude list
+    if (excludeWords.has(cleanWord)) return false;
     
-    // Must be meaningful (either in our lists or contains meaningful patterns)
-    const isMeaningful = meaningfulKeywords.some(keyword => 
-      cleanWord.includes(keyword) || keyword.includes(cleanWord)
+    // Must be a technical skill or meaningful term
+    const isTechnicalSkill = technicalSkills.some(skill => 
+      cleanWord.includes(skill) || skill.includes(cleanWord)
     );
     
-    const isTechnical = technicalTerms.some(term => 
-      cleanWord.includes(term) || term.includes(cleanWord)
-    );
-    
-    // Also include words that look like skills or technologies
-    const looksLikeSkill = /^(api|ui|ux|saas|paas|iaas|bi|roi|kpi|crm|erp|hr|qa|devops|frontend|backend|fullstack|ui|ux|api|sql|nosql|aws|azure|gcp|react|angular|vue|node|python|java|javascript|typescript|php|ruby|go|rust|swift|kotlin|scala|r|matlab|tableau|powerbi|salesforce|hubspot|marketo|pardot|seo|sem|ppc|cpc|cpm|ctr|conversion|analytics|machine|learning|ai|ml|nlp|cv|blockchain|iot|vr|ar|5g|iot|saas|paas|iaas|bi|roi|kpi|crm|erp|hr|qa|devops|frontend|backend|fullstack|ui|ux|api|sql|nosql|aws|azure|gcp|react|angular|vue|node|python|java|javascript|typescript|php|ruby|go|rust|swift|kotlin|scala|r|matlab|tableau|powerbi|salesforce|hubspot|marketo|pardot|seo|sem|ppc|cpc|cpm|ctr|conversion|analytics|machine|learning|ai|ml|nlp|cv|blockchain|iot|vr|ar|5g)$/i.test(cleanWord);
-    
-    return isMeaningful || isTechnical || looksLikeSkill;
+    return isTechnicalSkill;
   });
   
-  // Clean up the keywords and remove duplicates
+  // Clean up and return only the most relevant technical keywords
   const cleanedKeywords = filteredKeywords
     .map(keyword => keyword.replace(/[^\w]/g, '')) // Remove any remaining punctuation
     .filter(keyword => keyword.length >= 3) // Ensure minimum length
     .filter((keyword, index, arr) => arr.indexOf(keyword) === index) // Remove duplicates
-    .slice(0, 10); // Limit to 10 most relevant keywords
+    .slice(0, 8); // Limit to 8 most relevant technical keywords
   
   return cleanedKeywords;
 }
