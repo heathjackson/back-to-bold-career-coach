@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { colorClasses } from "@/lib/colors";
 
 export default function Home() {
   return (
@@ -55,7 +54,7 @@ export default function Home() {
               Why Choose Our AI-Powered Tools?
             </h2>
             <p className="text-xl text-brand-secondary max-w-3xl mx-auto">
-              Professional-grade assistance to help you stand out in today's competitive job market.
+              Professional-grade assistance to help you stand out in today&apos;s competitive job market.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -161,7 +160,7 @@ export default function Home() {
                   <h3 className="text-2xl font-bold text-brand-primary mb-2">Cover Letters</h3>
                   <p className="text-brand-secondary leading-relaxed">
                     Create compelling cover letters that tell your unique story and connect your experience 
-                    directly to the role you're applying for.
+                    directly to the role you&apos;re applying for.
                   </p>
                 </div>
               </div>
