@@ -406,13 +406,24 @@ function generateImprovementSuggestions(resume: string, jobDescription: string, 
 }): string[] {
   const suggestions: string[] = [];
   
-  // Keyword suggestions
-  if (scores.keywordMatch < 70) {
-    suggestions.push(`Add more relevant keywords from the job description. Consider including: ${scores.missingKeywords.slice(0, 3).join(", ")}`);
+  // Keyword suggestions - only if we have meaningful missing keywords
+  if (scores.keywordMatch < 70 && scores.missingKeywords.length > 0) {
+    const meaningfulMissing = scores.missingKeywords.filter(keyword => 
+      keyword.length >= 3 && !keyword.includes(',') && !keyword.includes('/')
+    ).slice(0, 3);
+    
+    if (meaningfulMissing.length > 0) {
+      suggestions.push(`Add more relevant keywords from the job description. Consider including: ${meaningfulMissing.join(", ")}`);
+    }
   }
   
-  if (scores.missingKeywords.length > 0) {
-    suggestions.push(`Incorporate these key terms naturally: ${scores.missingKeywords.slice(0, 5).join(", ")}`);
+  // Only suggest specific keywords if they're meaningful
+  const cleanMissingKeywords = scores.missingKeywords
+    .filter(keyword => keyword.length >= 3 && !keyword.includes(',') && !keyword.includes('/'))
+    .slice(0, 3);
+    
+  if (cleanMissingKeywords.length > 0) {
+    suggestions.push(`Incorporate these key terms naturally: ${cleanMissingKeywords.join(", ")}`);
   }
   
   // Formatting suggestions
@@ -447,13 +458,17 @@ function generateImprovementSuggestions(resume: string, jobDescription: string, 
     suggestions.push("Remove any graphics, tables, or complex formatting that might confuse ATS systems");
   }
   
-  // Industry-specific suggestions
+  // Industry-specific suggestions - only if meaningful
   const industryKeywords = extractIndustryKeywords(jobDescription);
-  if (industryKeywords.length > 0) {
-    suggestions.push(`Include industry-specific terminology: ${industryKeywords.slice(0, 3).join(", ")}`);
+  const cleanIndustryKeywords = industryKeywords
+    .filter(keyword => keyword.length >= 3 && !keyword.includes(',') && !keyword.includes('/'))
+    .slice(0, 3);
+    
+  if (cleanIndustryKeywords.length > 0) {
+    suggestions.push(`Include industry-specific terminology: ${cleanIndustryKeywords.join(", ")}`);
   }
   
-  return suggestions.slice(0, 8); // Limit to 8 suggestions
+  return suggestions.slice(0, 6); // Limit to 6 suggestions to avoid overwhelming
 }
 
 function generateOptimizationSummary(resume: string, scores: {
@@ -626,6 +641,18 @@ function extractKeywords(jobDescription: string): string[] {
     "quality", "excellence", "best practice", "standard", "benchmark", "baseline"
   ];
 
+  // Technical skills and tools
+  const technicalTerms = [
+    "python", "java", "javascript", "typescript", "react", "angular", "vue", "node", "php", "ruby", "go", "rust", "swift", "kotlin", "scala", "r", "matlab",
+    "sql", "nosql", "mongodb", "postgresql", "mysql", "redis", "elasticsearch",
+    "aws", "azure", "gcp", "docker", "kubernetes", "jenkins", "git", "github", "gitlab",
+    "tableau", "powerbi", "salesforce", "hubspot", "marketo", "pardot",
+    "seo", "sem", "ppc", "google analytics", "adwords", "facebook ads",
+    "agile", "scrum", "kanban", "jira", "confluence", "slack", "teams",
+    "machine learning", "ai", "ml", "nlp", "computer vision", "deep learning",
+    "blockchain", "iot", "vr", "ar", "5g", "cybersecurity", "devops", "ci/cd"
+  ];
+
   const words = jobDescription.toLowerCase().split(/\s+/);
   const uniqueWords = [...new Set(words)];
   
@@ -640,18 +667,29 @@ function extractKeywords(jobDescription: string): string[] {
     // Must not be a stop word
     if (stopWords.has(cleanWord)) return false;
     
-    // Must be meaningful (either in our list or contains meaningful patterns)
+    // Must be meaningful (either in our lists or contains meaningful patterns)
     const isMeaningful = meaningfulKeywords.some(keyword => 
       cleanWord.includes(keyword) || keyword.includes(cleanWord)
+    );
+    
+    const isTechnical = technicalTerms.some(term => 
+      cleanWord.includes(term) || term.includes(cleanWord)
     );
     
     // Also include words that look like skills or technologies
     const looksLikeSkill = /^(api|ui|ux|saas|paas|iaas|bi|roi|kpi|crm|erp|hr|qa|devops|frontend|backend|fullstack|ui|ux|api|sql|nosql|aws|azure|gcp|react|angular|vue|node|python|java|javascript|typescript|php|ruby|go|rust|swift|kotlin|scala|r|matlab|tableau|powerbi|salesforce|hubspot|marketo|pardot|seo|sem|ppc|cpc|cpm|ctr|conversion|analytics|machine|learning|ai|ml|nlp|cv|blockchain|iot|vr|ar|5g|iot|saas|paas|iaas|bi|roi|kpi|crm|erp|hr|qa|devops|frontend|backend|fullstack|ui|ux|api|sql|nosql|aws|azure|gcp|react|angular|vue|node|python|java|javascript|typescript|php|ruby|go|rust|swift|kotlin|scala|r|matlab|tableau|powerbi|salesforce|hubspot|marketo|pardot|seo|sem|ppc|cpc|cpm|ctr|conversion|analytics|machine|learning|ai|ml|nlp|cv|blockchain|iot|vr|ar|5g)$/i.test(cleanWord);
     
-    return isMeaningful || looksLikeSkill;
+    return isMeaningful || isTechnical || looksLikeSkill;
   });
   
-  return filteredKeywords.slice(0, 15); // Limit to 15 most relevant keywords
+  // Clean up the keywords and remove duplicates
+  const cleanedKeywords = filteredKeywords
+    .map(keyword => keyword.replace(/[^\w]/g, '')) // Remove any remaining punctuation
+    .filter(keyword => keyword.length >= 3) // Ensure minimum length
+    .filter((keyword, index, arr) => arr.indexOf(keyword) === index) // Remove duplicates
+    .slice(0, 10); // Limit to 10 most relevant keywords
+  
+  return cleanedKeywords;
 }
 
 function checkFormatting(resume: string): number {
