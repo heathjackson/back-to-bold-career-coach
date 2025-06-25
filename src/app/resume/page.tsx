@@ -14,6 +14,8 @@ interface ATSScore {
     formattingIssues: string[];
     readabilityScore: string;
     achievementCount: number;
+    optimizationSummary: string;
+    improvements: string[];
   };
 }
 
@@ -276,6 +278,31 @@ export default function ResumePage() {
                   </div>
                 </div>
 
+                {/* Optimization Summary */}
+                {atsScore.details.optimizationSummary && (
+                  <div className="mb-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+                    <div className="text-sm font-medium text-green-400 mb-2">Optimizations Applied:</div>
+                    <div className="text-xs text-green-300 whitespace-pre-line">
+                      {atsScore.details.optimizationSummary}
+                    </div>
+                  </div>
+                )}
+
+                {/* Improvement Suggestions */}
+                {atsScore.details.improvements.length > 0 && (
+                  <div className="mb-4">
+                    <div className="text-sm font-medium text-brand-primary mb-2">Suggestions for Further Improvement:</div>
+                    <ul className="text-xs text-brand-secondary space-y-1">
+                      {atsScore.details.improvements.map((suggestion, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-brand-accent mr-2">•</span>
+                          <span>{suggestion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {atsScore.details.missingKeywords.length > 0 && (
                   <div className="mb-3">
                     <div className="text-sm font-medium text-brand-primary mb-1">Missing Keywords:</div>
@@ -288,7 +315,7 @@ export default function ResumePage() {
 
                 {atsScore.details.formattingIssues.length > 0 && (
                   <div>
-                    <div className="text-sm font-medium text-brand-primary mb-1">Suggestions:</div>
+                    <div className="text-sm font-medium text-brand-primary mb-1">Formatting Issues:</div>
                     <ul className="text-xs text-brand-secondary space-y-1">
                       {atsScore.details.formattingIssues.map((issue, index) => (
                         <li key={index}>• {issue}</li>

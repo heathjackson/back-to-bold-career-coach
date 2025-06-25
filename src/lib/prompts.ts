@@ -324,6 +324,8 @@ export interface ATSScore {
     formattingIssues: string[];
     readabilityScore: string;
     achievementCount: number;
+    improvements: string[];
+    optimizationSummary: string;
   };
 }
 
@@ -354,6 +356,27 @@ export function calculateATSScore(resume: string, jobDescription: string): ATSSc
     (achievementScore * 0.2)
   );
   
+  // Generate improvement suggestions
+  const improvements = generateImprovementSuggestions(resume, jobDescription, {
+    keywordMatch,
+    formattingScore,
+    readabilityScore,
+    achievementScore,
+    overall,
+    matchedKeywords,
+    missingKeywords: keywords.filter(k => !matchedKeywords.includes(k))
+  });
+  
+  // Generate optimization summary
+  const optimizationSummary = generateOptimizationSummary(resume, {
+    keywordMatch,
+    formattingScore,
+    readabilityScore,
+    achievementScore,
+    matchedKeywords,
+    missingKeywords: keywords.filter(k => !matchedKeywords.includes(k))
+  });
+  
   return {
     overall: Math.min(100, Math.max(0, overall)),
     keywordMatch: Math.round(keywordMatch),
@@ -365,9 +388,142 @@ export function calculateATSScore(resume: string, jobDescription: string): ATSSc
       missingKeywords: keywords.filter(k => !matchedKeywords.includes(k)),
       formattingIssues: getFormattingIssues(resume),
       readabilityScore: getReadabilityDescription(readabilityScore),
-      achievementCount: countAchievements(resume)
+      achievementCount: countAchievements(resume),
+      improvements,
+      optimizationSummary
     }
   };
+}
+
+function generateImprovementSuggestions(resume: string, jobDescription: string, scores: {
+  keywordMatch: number;
+  formattingScore: number;
+  readabilityScore: number;
+  achievementScore: number;
+  overall: number;
+  matchedKeywords: string[];
+  missingKeywords: string[];
+}): string[] {
+  const suggestions: string[] = [];
+  
+  // Keyword suggestions
+  if (scores.keywordMatch < 70) {
+    suggestions.push(`Add more relevant keywords from the job description. Consider including: ${scores.missingKeywords.slice(0, 3).join(", ")}`);
+  }
+  
+  if (scores.missingKeywords.length > 0) {
+    suggestions.push(`Incorporate these key terms naturally: ${scores.missingKeywords.slice(0, 5).join(", ")}`);
+  }
+  
+  // Formatting suggestions
+  if (scores.formattingScore < 80) {
+    if (!resume.includes('•') && !resume.includes('-')) {
+      suggestions.push("Use bullet points (•) for all achievements to improve ATS compatibility");
+    }
+    if (!/\d+%|\d+%|\$\d+/.test(resume)) {
+      suggestions.push("Add specific numbers and percentages to quantify your achievements");
+    }
+    if (resume.length < 500) {
+      suggestions.push("Expand your resume with more detailed achievements and responsibilities");
+    }
+  }
+  
+  // Readability suggestions
+  if (scores.readabilityScore < 80) {
+    suggestions.push("Simplify complex sentences to improve readability for both ATS and human readers");
+    suggestions.push("Break up long paragraphs into shorter, scannable sections");
+  }
+  
+  // Achievement focus suggestions
+  if (scores.achievementScore < 70) {
+    suggestions.push("Start each bullet point with strong action verbs like 'achieved', 'developed', 'implemented'");
+    suggestions.push("Focus on quantifiable results and impact rather than just listing responsibilities");
+  }
+  
+  // General optimization suggestions
+  if (scores.overall < 80) {
+    suggestions.push("Ensure all sections are clearly labeled (Experience, Education, Skills)");
+    suggestions.push("Use consistent formatting throughout the document");
+    suggestions.push("Remove any graphics, tables, or complex formatting that might confuse ATS systems");
+  }
+  
+  // Industry-specific suggestions
+  const industryKeywords = extractIndustryKeywords(jobDescription);
+  if (industryKeywords.length > 0) {
+    suggestions.push(`Include industry-specific terminology: ${industryKeywords.slice(0, 3).join(", ")}`);
+  }
+  
+  return suggestions.slice(0, 8); // Limit to 8 suggestions
+}
+
+function generateOptimizationSummary(resume: string, scores: {
+  keywordMatch: number;
+  formattingScore: number;
+  readabilityScore: number;
+  achievementScore: number;
+  matchedKeywords: string[];
+  missingKeywords: string[];
+}): string {
+  const improvements: string[] = [];
+  
+  // What was optimized
+  if (scores.keywordMatch > 60) {
+    improvements.push(`✅ Matched ${scores.matchedKeywords.length} keywords from the job description`);
+  }
+  
+  if (scores.formattingScore > 80) {
+    improvements.push("✅ Optimized formatting for ATS compatibility");
+  }
+  
+  if (scores.readabilityScore > 80) {
+    improvements.push("✅ Improved readability and clarity");
+  }
+  
+  if (scores.achievementScore > 70) {
+    improvements.push("✅ Enhanced achievement-focused content");
+  }
+  
+  // Specific optimizations made
+  const bulletPoints = (resume.match(/[•\-*]/g) || []).length;
+  if (bulletPoints > 0) {
+    improvements.push(`✅ Used ${bulletPoints} bullet points for better scanning`);
+  }
+  
+  const numbers = (resume.match(/\d+%|\d+%|\$\d+|\d+ years|\d+ people|\d+ projects/gi) || []).length;
+  if (numbers > 0) {
+    improvements.push(`✅ Included ${numbers} quantifiable metrics`);
+  }
+  
+  const actionVerbs = atsOptimization.actionVerbs.filter(verb => 
+    new RegExp(`\\b${verb}\\b`, 'i').test(resume)
+  );
+  if (actionVerbs.length > 0) {
+    improvements.push(`✅ Used ${actionVerbs.length} strong action verbs`);
+  }
+  
+  return improvements.join("\n");
+}
+
+function extractIndustryKeywords(jobDescription: string): string[] {
+  const industryTerms = [
+    // Tech
+    "agile", "scrum", "ci/cd", "cloud", "microservices", "api", "database", "frontend", "backend",
+    // Marketing
+    "seo", "sem", "social media", "content", "analytics", "conversion", "brand", "campaign",
+    // Sales
+    "b2b", "crm", "pipeline", "quota", "territory", "negotiation", "prospecting",
+    // Finance
+    "modeling", "budgeting", "forecasting", "compliance", "risk", "investment",
+    // Healthcare
+    "patient", "clinical", "regulatory", "quality", "outcomes", "compliance",
+    // Education
+    "curriculum", "assessment", "learning", "student", "program", "instruction"
+  ];
+  
+  const words = jobDescription.toLowerCase().split(/\s+/);
+  return words.filter(word => 
+    industryTerms.some(term => word.includes(term) || term.includes(word))
+  ).slice(0, 5);
 }
 
 function extractKeywords(jobDescription: string): string[] {
