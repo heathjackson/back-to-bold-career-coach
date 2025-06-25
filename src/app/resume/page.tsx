@@ -185,11 +185,12 @@ export default function ResumePage() {
                   <select
                     id="yearsOfExperience"
                     name="yearsOfExperience"
+                    defaultValue="5"
                     className="w-full px-4 py-3 bg-gray-800 border border-brand-primary rounded-lg text-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent"
                   >
                     <option value="1">1 year</option>
                     <option value="3">3 years</option>
-                    <option value="5" selected>5 years</option>
+                    <option value="5">5 years</option>
                     <option value="8">8 years</option>
                     <option value="12">12 years</option>
                     <option value="15">15+ years</option>
@@ -203,6 +204,7 @@ export default function ResumePage() {
                   <select
                     id="industry"
                     name="industry"
+                    defaultValue="tech"
                     className="w-full px-4 py-3 bg-gray-800 border border-brand-primary rounded-lg text-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent"
                   >
                     <option value="tech">Technology</option>
