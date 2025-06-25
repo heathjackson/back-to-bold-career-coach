@@ -527,20 +527,131 @@ function extractIndustryKeywords(jobDescription: string): string[] {
 }
 
 function extractKeywords(jobDescription: string): string[] {
-  const commonKeywords = [
+  // Common words to exclude (stop words and non-meaningful terms)
+  const stopWords = new Set([
+    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
+    'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
+    'will', 'would', 'could', 'should', 'may', 'might', 'can', 'must', 'shall',
+    'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
+    'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their',
+    'mine', 'yours', 'his', 'hers', 'ours', 'theirs',
+    'who', 'what', 'where', 'when', 'why', 'how', 'which', 'whose', 'whom',
+    'if', 'then', 'else', 'when', 'while', 'before', 'after', 'until', 'since',
+    'about', 'above', 'below', 'under', 'over', 'between', 'among', 'through',
+    'during', 'before', 'after', 'within', 'without', 'against', 'toward', 'towards',
+    'into', 'onto', 'upon', 'from', 'up', 'down', 'out', 'off', 'away', 'back',
+    'here', 'there', 'where', 'everywhere', 'nowhere', 'somewhere', 'anywhere',
+    'now', 'then', 'today', 'tomorrow', 'yesterday', 'always', 'never', 'often',
+    'sometimes', 'usually', 'rarely', 'seldom', 'frequently', 'occasionally',
+    'very', 'really', 'quite', 'rather', 'too', 'so', 'much', 'many', 'few', 'little',
+    'more', 'most', 'less', 'least', 'better', 'best', 'worse', 'worst',
+    'good', 'bad', 'big', 'small', 'large', 'huge', 'tiny', 'new', 'old', 'young',
+    'first', 'last', 'next', 'previous', 'current', 'recent', 'early', 'late',
+    'high', 'low', 'long', 'short', 'wide', 'narrow', 'thick', 'thin',
+    'strong', 'weak', 'hard', 'soft', 'easy', 'difficult', 'simple', 'complex',
+    'important', 'necessary', 'essential', 'required', 'needed', 'wanted', 'desired',
+    'available', 'possible', 'impossible', 'likely', 'unlikely', 'certain', 'uncertain',
+    'same', 'different', 'similar', 'various', 'several', 'multiple', 'single',
+    'each', 'every', 'all', 'any', 'some', 'none', 'both', 'either', 'neither',
+    'one', 'two', 'three', 'first', 'second', 'third', 'next', 'previous',
+    'other', 'another', 'additional', 'extra', 'more', 'less', 'fewer',
+    'team', 'group', 'company', 'organization', 'department', 'division',
+    'work', 'job', 'position', 'role', 'responsibility', 'duty', 'task',
+    'project', 'program', 'initiative', 'effort', 'endeavor', 'undertaking',
+    'experience', 'background', 'history', 'record', 'track', 'performance',
+    'skill', 'ability', 'capability', 'competency', 'expertise', 'knowledge',
+    'understanding', 'comprehension', 'awareness', 'familiarity', 'proficiency',
+    'level', 'degree', 'extent', 'amount', 'quantity', 'number', 'count',
+    'time', 'period', 'duration', 'length', 'span', 'interval', 'moment',
+    'year', 'month', 'week', 'day', 'hour', 'minute', 'second',
+    'people', 'person', 'individual', 'employee', 'staff', 'member', 'colleague',
+    'manager', 'leader', 'supervisor', 'director', 'executive', 'officer',
+    'client', 'customer', 'user', 'stakeholder', 'partner', 'vendor', 'supplier',
+    'data', 'information', 'detail', 'fact', 'figure', 'statistic', 'metric',
+    'result', 'outcome', 'effect', 'impact', 'influence', 'consequence',
+    'goal', 'objective', 'target', 'aim', 'purpose', 'intention', 'plan',
+    'strategy', 'approach', 'method', 'technique', 'process', 'procedure',
+    'system', 'platform', 'tool', 'technology', 'software', 'application',
+    'development', 'implementation', 'deployment', 'integration', 'configuration',
+    'management', 'administration', 'coordination', 'oversight', 'supervision',
+    'communication', 'collaboration', 'cooperation', 'partnership', 'relationship',
+    'analysis', 'assessment', 'evaluation', 'review', 'examination', 'investigation',
+    'research', 'study', 'survey', 'poll', 'questionnaire', 'interview',
+    'report', 'document', 'record', 'file', 'database', 'repository',
+    'quality', 'standard', 'requirement', 'specification', 'guideline', 'policy',
+    'compliance', 'regulation', 'law', 'rule', 'procedure', 'protocol',
+    'safety', 'security', 'protection', 'safeguard', 'precaution', 'measure',
+    'training', 'education', 'learning', 'development', 'improvement', 'enhancement',
+    'support', 'assistance', 'help', 'aid', 'service', 'maintenance', 'care',
+    'problem', 'issue', 'challenge', 'difficulty', 'obstacle', 'barrier',
+    'solution', 'resolution', 'fix', 'repair', 'correction', 'improvement',
+    'success', 'achievement', 'accomplishment', 'milestone', 'victory', 'win',
+    'failure', 'mistake', 'error', 'fault', 'defect', 'flaw', 'weakness',
+    'opportunity', 'chance', 'possibility', 'potential', 'prospect', 'future',
+    'growth', 'expansion', 'increase', 'improvement', 'progress', 'advancement',
+    'change', 'modification', 'adjustment', 'alteration', 'transformation',
+    'innovation', 'creativity', 'originality', 'uniqueness', 'distinction',
+    'excellence', 'superiority', 'advantage', 'benefit', 'value', 'worth',
+    'cost', 'expense', 'budget', 'financial', 'economic', 'monetary',
+    'market', 'industry', 'sector', 'field', 'domain', 'area', 'region',
+    'location', 'place', 'site', 'venue', 'facility', 'office', 'building',
+    'environment', 'atmosphere', 'culture', 'climate', 'setting', 'context'
+  ]);
+
+  // Meaningful keywords that indicate job requirements and skills
+  const meaningfulKeywords = [
     "management", "leadership", "strategy", "analysis", "development", "implementation",
     "coordination", "planning", "communication", "collaboration", "problem solving",
     "project management", "data analysis", "customer service", "sales", "marketing",
-    "technical", "creative", "strategic", "operational", "financial", "administrative"
+    "technical", "creative", "strategic", "operational", "financial", "administrative",
+    "agile", "scrum", "lean", "six sigma", "quality assurance", "risk management",
+    "budgeting", "forecasting", "reporting", "documentation", "training", "mentoring",
+    "recruitment", "hiring", "onboarding", "performance", "evaluation", "feedback",
+    "automation", "optimization", "streamlining", "efficiency", "productivity", "innovation",
+    "research", "design", "testing", "deployment", "maintenance", "support",
+    "compliance", "regulatory", "audit", "governance", "policies", "procedures",
+    "stakeholder", "client", "vendor", "partner", "relationship", "networking",
+    "presentation", "public speaking", "negotiation", "influence", "persuasion",
+    "critical thinking", "decision making", "problem solving", "troubleshooting",
+    "multitasking", "prioritization", "time management", "organization", "planning",
+    "teamwork", "collaboration", "cross-functional", "interdisciplinary", "diverse",
+    "remote", "virtual", "global", "international", "multicultural", "diversity",
+    "startup", "enterprise", "scale", "growth", "expansion", "transformation",
+    "digital", "online", "web", "mobile", "cloud", "saas", "platform",
+    "api", "integration", "database", "analytics", "bi", "reporting", "dashboard",
+    "crm", "erp", "hr", "finance", "operations", "logistics", "supply chain",
+    "customer", "user", "client", "stakeholder", "end-user", "consumer",
+    "revenue", "profit", "margin", "roi", "kpi", "metric", "measurement",
+    "improvement", "enhancement", "optimization", "efficiency", "effectiveness",
+    "quality", "excellence", "best practice", "standard", "benchmark", "baseline"
   ];
-  
+
   const words = jobDescription.toLowerCase().split(/\s+/);
   const uniqueWords = [...new Set(words)];
   
-  return uniqueWords.filter(word => 
-    word.length > 3 && 
-    commonKeywords.some(keyword => word.includes(keyword) || keyword.includes(word))
-  ).slice(0, 15);
+  // Filter out stop words and short words, keep meaningful keywords
+  const filteredKeywords = uniqueWords.filter(word => {
+    // Remove punctuation and clean the word
+    const cleanWord = word.replace(/[^\w]/g, '');
+    
+    // Must be at least 3 characters long
+    if (cleanWord.length < 3) return false;
+    
+    // Must not be a stop word
+    if (stopWords.has(cleanWord)) return false;
+    
+    // Must be meaningful (either in our list or contains meaningful patterns)
+    const isMeaningful = meaningfulKeywords.some(keyword => 
+      cleanWord.includes(keyword) || keyword.includes(cleanWord)
+    );
+    
+    // Also include words that look like skills or technologies
+    const looksLikeSkill = /^(api|ui|ux|saas|paas|iaas|bi|roi|kpi|crm|erp|hr|qa|devops|frontend|backend|fullstack|ui|ux|api|sql|nosql|aws|azure|gcp|react|angular|vue|node|python|java|javascript|typescript|php|ruby|go|rust|swift|kotlin|scala|r|matlab|tableau|powerbi|salesforce|hubspot|marketo|pardot|seo|sem|ppc|cpc|cpm|ctr|conversion|analytics|machine|learning|ai|ml|nlp|cv|blockchain|iot|vr|ar|5g|iot|saas|paas|iaas|bi|roi|kpi|crm|erp|hr|qa|devops|frontend|backend|fullstack|ui|ux|api|sql|nosql|aws|azure|gcp|react|angular|vue|node|python|java|javascript|typescript|php|ruby|go|rust|swift|kotlin|scala|r|matlab|tableau|powerbi|salesforce|hubspot|marketo|pardot|seo|sem|ppc|cpc|cpm|ctr|conversion|analytics|machine|learning|ai|ml|nlp|cv|blockchain|iot|vr|ar|5g)$/i.test(cleanWord);
+    
+    return isMeaningful || looksLikeSkill;
+  });
+  
+  return filteredKeywords.slice(0, 15); // Limit to 15 most relevant keywords
 }
 
 function checkFormatting(resume: string): number {
