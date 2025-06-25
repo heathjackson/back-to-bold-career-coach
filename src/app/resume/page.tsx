@@ -111,6 +111,61 @@ export default function ResumePage() {
     return "Needs Improvement";
   };
 
+  const formatResumeOutput = (resume: string) => {
+    // Split the resume into lines
+    const lines = resume.split('\n');
+    const formattedLines: string[] = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      if (!line) {
+        formattedLines.push('');
+        continue;
+      }
+      
+      // Detect and format section headers
+      const sectionHeaders = [
+        'experience', 'education', 'skills', 'summary', 'objective', 
+        'professional summary', 'work experience', 'employment history',
+        'technical skills', 'certifications', 'awards', 'publications',
+        'projects', 'volunteer', 'languages', 'interests'
+      ];
+      
+      const isSectionHeader = sectionHeaders.some(header => 
+        line.toLowerCase().includes(header)
+      );
+      
+      if (isSectionHeader) {
+        // Format section headers
+        formattedLines.push('');
+        formattedLines.push(`**${line.toUpperCase()}**`);
+        formattedLines.push('');
+      } else if (line.match(/^[A-Z][A-Z\s&]+$/)) {
+        // Likely a company name or job title (all caps)
+        formattedLines.push('');
+        formattedLines.push(`**${line}**`);
+      } else if (line.match(/^\d{4}\s*[-–—]\s*\d{4}|\d{4}\s*[-–—]\s*Present|\d{4}\s*[-–—]\s*Current/)) {
+        // Date range
+        formattedLines.push(`*${line}*`);
+      } else if (line.startsWith('•') || line.startsWith('-') || line.startsWith('*')) {
+        // Bullet points
+        formattedLines.push(`  ${line}`);
+      } else if (line.match(/^[A-Z][^.!?]*[.!?]$/)) {
+        // Likely a sentence (starts with capital, ends with punctuation)
+        formattedLines.push(line);
+      } else if (line.match(/^[A-Z][A-Za-z\s]+$/)) {
+        // Likely a name or title (starts with capital, no punctuation)
+        formattedLines.push(`**${line}**`);
+      } else {
+        // Regular text
+        formattedLines.push(line);
+      }
+    }
+    
+    return formattedLines.join('\n');
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-brand-primary py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -348,10 +403,56 @@ export default function ResumePage() {
                   </div>
                 </div>
                 
-                <div className="bg-gray-800/50 rounded-lg p-4 border border-brand-primary">
-                  <pre className="whitespace-pre-wrap text-sm text-brand-primary font-sans">
-                    {result}
-                  </pre>
+                <div className="bg-white text-gray-900 rounded-lg p-6 border border-brand-primary shadow-lg">
+                  <div className="prose prose-sm max-w-none">
+                    <div 
+                      className="font-sans leading-relaxed"
+                      style={{
+                        fontSize: '14px',
+                        lineHeight: '1.6',
+                        color: '#1f2937'
+                      }}
+                    >
+                      {formatResumeOutput(result).split('\n').map((line, index) => {
+                        if (line.startsWith('**') && line.endsWith('**')) {
+                          // Bold headers
+                          const text = line.slice(2, -2);
+                          return (
+                            <div key={index} className="font-bold text-lg text-gray-800 mb-2 mt-4 first:mt-0">
+                              {text}
+                            </div>
+                          );
+                        } else if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {
+                          // Italic dates
+                          const text = line.slice(1, -1);
+                          return (
+                            <div key={index} className="text-gray-600 italic mb-1">
+                              {text}
+                            </div>
+                          );
+                        } else if (line.startsWith('  •') || line.startsWith('  -') || line.startsWith('  *')) {
+                          // Bullet points
+                          const text = line.slice(3);
+                          return (
+                            <div key={index} className="ml-4 mb-1 flex items-start">
+                              <span className="text-gray-500 mr-2 mt-1">•</span>
+                              <span>{text}</span>
+                            </div>
+                          );
+                        } else if (line.trim() === '') {
+                          // Empty lines
+                          return <div key={index} className="h-2"></div>;
+                        } else {
+                          // Regular text
+                          return (
+                            <div key={index} className="mb-1">
+                              {line}
+                            </div>
+                          );
+                        }
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
