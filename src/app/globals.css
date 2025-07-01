@@ -1,40 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  /* Primary Brand Colors */
-  --color-primary-50: #faf5ff;
-  --color-primary-100: #f3e8ff;
-  --color-primary-200: #e9d5ff;
-  --color-primary-300: #d8b4fe;
-  --color-primary-400: #c084fc;
-  --color-primary-500: #a855f7;
-  --color-primary-600: #9333ea;
-  --color-primary-700: #7c3aed;
-  --color-primary-800: #6b21a8;
-  --color-primary-900: #581c87;
-  --color-primary-950: #3b0764;
-
-  /* Background Colors */
-  --color-bg-primary: #111827;
-  --color-bg-secondary: rgba(255, 255, 255, 0.05);
-  --color-bg-accent: rgba(59, 7, 100, 0.1);
-  --color-bg-gradient: linear-gradient(135deg, rgba(59, 7, 100, 0.2) 0%, rgba(88, 28, 135, 0.2) 100%);
-
-  /* Text Colors */
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #d1d5db;
-  --color-text-muted: #9ca3af;
-  --color-text-accent: #d8b4fe;
-
-  /* Border Colors */
-  --color-border-primary: rgba(255, 255, 255, 0.1);
-  --color-border-secondary: rgba(59, 7, 100, 0.2);
-  --color-border-accent: rgba(216, 180, 254, 0.3);
-
-  /* Button Colors */
-  --color-btn-primary: linear-gradient(135deg, #581c87 0%, #3b0764 100%);
-  --color-btn-secondary: transparent;
-  --color-btn-hover: rgba(59, 7, 100, 0.1);
+  /* CSS Variables are dynamically set by the getCSSVariables() function in colors.ts */
+  /* This ensures all colors are managed from a single source of truth */
 }
 
 @theme inline {
@@ -46,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #111827;
-    --foreground: #ffffff;
+    --background: var(--color-bg-primary);
+    --foreground: var(--color-text-primary);
   }
 }
 
@@ -59,7 +27,7 @@ body {
 
 /* Utility Classes */
 .bg-brand-primary {
-  background-color: var(--color-primary-950);
+  background-color: var(--color-bg-primary);
 }
 
 .bg-brand-secondary {
@@ -80,6 +48,10 @@ body {
 
 .text-brand-secondary {
   color: var(--color-text-secondary);
+}
+
+.text-brand-muted {
+  color: var(--color-text-muted);
 }
 
 .text-brand-accent {

@@ -67,10 +67,10 @@ export default function CoverLetterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-[--color-bg-primary] py-12 text-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-lg p-10 mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Cover Letter Generator</h1>
+        <div className="bg-blue-900/40 rounded-2xl shadow-lg p-10 mb-10">
+          <h1 className="text-3xl font-bold text-white mb-6 text-center">Cover Letter Generator</h1>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div>
               <label htmlFor="role" className="block text-lg font-semibold text-gray-900 mb-2">
@@ -135,7 +135,7 @@ export default function CoverLetterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-cyan-600 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Generating..." : "Generate Cover Letter"}
               </button>
@@ -145,10 +145,10 @@ export default function CoverLetterPage() {
 
         {/* Output Section */}
         {output && (
-          <div className="bg-white rounded-2xl shadow-lg p-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Cover Letter</h2>
-            <div className="prose prose-lg max-w-none">
-              <div className="bg-gray-50 rounded-lg p-6 border-l-4 border-cyan-500">
+          <div className="bg-blue-900/40 rounded-2xl shadow-lg p-10">
+            <h2 className="text-2xl font-bold text-white mb-6">Your Cover Letter</h2>
+            <div className="prose prose-lg max-w-none text-white">
+              <div className="bg-blue-900/20 rounded-lg p-6 border-l-4 border-blue-500">
                 <ReactMarkdown 
                   components={{
                     h1: ({children}) => <h1 className="text-2xl font-bold text-gray-900 mb-4">{children}</h1>,

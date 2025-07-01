@@ -74,7 +74,7 @@ export default function EmailCollector({ onEmailCollected, isOpen, onClose }: Em
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               required
             />
           </div>
@@ -92,7 +92,7 @@ export default function EmailCollector({ onEmailCollected, isOpen, onClose }: Em
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-purple-800 text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-purple-900 transition focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-blue-600 py-3 px-6 rounded-lg font-semibold shadow hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Setting you up..." : "Get Results"}
             </button>

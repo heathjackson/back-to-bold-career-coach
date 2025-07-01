@@ -1,34 +1,34 @@
 // Color Configuration - Change colors here to update the entire app
 export const colors = {
-  // Primary Brand Colors (Purple theme)
+  // Primary Brand Colors (Blue theme)
   primary: {
-    50: '#faf5ff',
-    100: '#f3e8ff', 
-    200: '#e9d5ff',
-    300: '#d8b4fe',
-    400: '#c084fc',
-    500: '#a855f7',
-    600: '#9333ea',
-    700: '#7c3aed',
-    800: '#6b21a8',
-    900: '#581c87',
-    950: '#3b0764'
+    50: '#eff6ff',
+    100: '#dbeafe',
+    200: '#bfdbfe',
+    300: '#93c5fd',
+    400: '#60a5fa',
+    500: '#3b82f6',
+    600: '#2563eb',
+    700: '#1d4ed8',
+    800: '#1e40af',
+    900: '#1e3a8a',
+    950: '#172554'
   },
 
   // Alternative themes - uncomment to use different colors
-  // Blue theme
+  // Purple theme
   // primary: {
-  //   50: '#eff6ff',
-  //   100: '#dbeafe',
-  //   200: '#bfdbfe',
-  //   300: '#93c5fd',
-  //   400: '#60a5fa',
-  //   500: '#3b82f6',
-  //   600: '#2563eb',
-  //   700: '#1d4ed8',
-  //   800: '#1e40af',
-  //   900: '#1e3a8a',
-  //   950: '#172554'
+  //   50: '#faf5ff',
+  //   100: '#f3e8ff', 
+  //   200: '#e9d5ff',
+  //   300: '#d8b4fe',
+  //   400: '#c084fc',
+  //   500: '#a855f7',
+  //   600: '#9333ea',
+  //   700: '#7c3aed',
+  //   800: '#6b21a8',
+  //   900: '#581c87',
+  //   950: '#3b0764'
   // },
 
   // Green theme
@@ -48,18 +48,18 @@ export const colors = {
 
   // Background colors
   background: {
-    primary: '#000000',
+    primary: '#0f172a', // dark blue
     secondary: 'rgba(255, 255, 255, 0.05)',
-    accent: 'rgba(59, 7, 100, 0.1)',
-    gradient: 'linear-gradient(135deg, rgba(59, 7, 100, 0.2) 0%, rgba(88, 28, 135, 0.2) 100%)'
+    accent: 'rgba(30, 64, 175, 0.1)', // blue accent
+    gradient: 'linear-gradient(135deg, rgba(30, 41, 59, 0.2) 0%, rgba(30, 64, 175, 0.2) 100%)'
   },
 
   // Text colors
   text: {
     primary: '#ffffff',
-    secondary: '#d1d5db',
-    muted: '#9ca3af',
-    accent: '#d8b4fe'
+    secondary: '#ffffff',
+    muted: '#ffffff',
+    accent: '#ffffff'
   },
 
   // Border colors

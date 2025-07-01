@@ -2,43 +2,36 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-900 text-brand-primary">
+    <main className="min-h-screen bg-[--color-bg-primary] text-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gray-900">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+      <section className="relative overflow-hidden bg-transparent">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="text-center">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-brand-accent text-brand-accent text-sm font-medium mb-8 backdrop-blur-sm border border-brand-secondary">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-900/30 text-blue-200 text-sm font-medium mb-8 backdrop-blur-sm border border-blue-700">
               <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               AI-Powered Career Coaching
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-brand-primary mb-8 leading-tight">
-              Redefine Your
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-purple-400">
-                Career Comeback
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+              Back to Bold Career Coach
+              <span className="block text-blue-300">
+                AI-Powered Career Comeback Tools
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-brand-secondary mb-12 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-blue-200 mb-12 max-w-4xl mx-auto leading-relaxed">
               Transform your job search with AI-powered tools that help you craft compelling resumes, 
               write standout cover letters, and discover your ideal career path.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/career-path">
-                <span className="group relative inline-flex items-center px-8 py-4 btn-primary font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
-                  Start Your Assessment
-                  <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
+                <span className="group relative inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                  Get Started
                 </span>
               </Link>
               <Link href="/resume">
-                <span className="inline-flex items-center px-8 py-4 btn-secondary font-semibold rounded-xl hover:border-brand-accent transition-all duration-200">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Rewrite Resume
+                <span className="inline-flex items-center px-8 py-4 bg-white/10 border border-blue-400 text-blue-200 font-semibold rounded-xl hover:bg-blue-900/30 hover:text-white transition-all duration-200">
+                  Learn More
                 </span>
               </Link>
             </div>
@@ -47,7 +40,7 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 bg-gray-900 border-b border-brand-primary">
+      <section className="py-16 bg-brand-primary border-b border-brand-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-brand-primary mb-4">
@@ -90,7 +83,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-gray-900">
+      <section className="py-24 bg-brand-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-brand-primary mb-6">
@@ -139,7 +132,7 @@ export default function Home() {
                 </div>
               </div>
               <Link href="/resume">
-                <span className="inline-flex items-center px-6 py-3 btn-primary font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                   Rewrite My Resume
                   <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -185,7 +178,7 @@ export default function Home() {
                 </div>
               </div>
               <Link href="/cover-letter">
-                <span className="inline-flex items-center px-6 py-3 btn-primary font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                   Write Cover Letter
                   <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -231,7 +224,7 @@ export default function Home() {
                 </div>
               </div>
               <Link href="/linkedin">
-                <span className="inline-flex items-center px-6 py-3 btn-primary font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                   Optimize Profile
                   <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -277,7 +270,7 @@ export default function Home() {
                 </div>
               </div>
               <Link href="/career-path">
-                <span className="inline-flex items-center px-6 py-3 btn-primary font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                   Find My Path
                   <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -290,17 +283,17 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-24 bg-brand-gradient backdrop-blur-sm border-t border-brand-primary">
+      <section className="py-24 bg-[--color-bg-primary] border-t border-brand-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-brand-primary mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Transform Your Career?
           </h2>
-          <p className="text-xl text-brand-secondary mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-blue-200 mb-12 max-w-2xl mx-auto">
             Start your journey with our AI-powered career tools and take the first step toward your dream job.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/career-path">
-              <span className="group inline-flex items-center px-8 py-4 btn-primary font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+              <span className="group inline-flex items-center px-8 py-4 bg-blue-600 font-semibold rounded-xl text-white shadow-lg hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 Start Your Assessment
                 <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -308,7 +301,7 @@ export default function Home() {
               </span>
             </Link>
             <Link href="/resume">
-              <span className="inline-flex items-center px-8 py-4 btn-secondary font-semibold rounded-xl hover:border-brand-accent transition-all duration-200">
+              <span className="inline-flex items-center px-8 py-4 bg-white/10 border border-blue-400 text-blue-200 font-semibold rounded-xl hover:bg-blue-900/30 hover:text-white transition-all duration-200">
                 Rewrite My Resume
               </span>
             </Link>

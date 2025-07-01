@@ -239,12 +239,10 @@ export default function CareerPathPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Career Path Assessment
-          </h1>
+    <div className="min-h-screen bg-[--color-bg-primary] py-12 text-white">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-blue-900/40 rounded-2xl shadow-lg p-10 mb-10">
+          <h1 className="text-3xl font-bold text-white mb-6 text-center">Career Path Assessment</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Let&apos;s have a conversation about your career journey and discover opportunities that align with your experience and goals.
           </p>

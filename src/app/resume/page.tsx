@@ -167,13 +167,13 @@ export default function ResumePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-brand-primary py-12">
+    <div className="min-h-screen bg-[--color-bg-primary] text-white py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             AI-Powered Resume Rewriting
           </h1>
-          <p className="text-xl text-brand-secondary max-w-3xl mx-auto">
+          <p className="text-xl text-blue-200 max-w-3xl mx-auto">
             Transform your resume with industry-specific optimization, ATS compatibility, 
             and professional formatting that helps you stand out to recruiters.
           </p>
@@ -181,8 +181,8 @@ export default function ResumePage() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Form Section */}
-          <div className="bg-brand-secondary rounded-2xl p-8 backdrop-blur-sm border border-brand-primary">
-            <h2 className="text-2xl font-bold text-brand-primary mb-6">
+          <div className="bg-blue-900/40 rounded-2xl p-8 backdrop-blur-sm border border-blue-700">
+            <h2 className="text-2xl font-bold text-white mb-6">
               Rewrite Your Resume
             </h2>
             
@@ -278,7 +278,7 @@ export default function ResumePage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full btn-primary font-semibold py-3 px-6 rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Rewriting Resume..." : "Rewrite My Resume"}
               </button>
@@ -390,13 +390,13 @@ export default function ResumePage() {
                   <div className="flex gap-2">
                     <button
                       onClick={copyToClipboard}
-                      className="px-3 py-1 text-sm btn-secondary rounded hover:border-brand-accent transition-colors"
+                      className="px-3 py-1 text-sm bg-blue-900/30 text-blue-200 rounded hover:bg-blue-800 transition-colors"
                     >
                       Copy
                     </button>
                     <button
                       onClick={downloadText}
-                      className="px-3 py-1 text-sm btn-secondary rounded hover:border-brand-accent transition-colors"
+                      className="px-3 py-1 text-sm bg-blue-900/30 text-blue-200 rounded hover:bg-blue-800 transition-colors"
                     >
                       Download
                     </button>

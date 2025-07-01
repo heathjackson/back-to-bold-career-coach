@@ -68,7 +68,7 @@ export default function EmailGate({ children }: EmailGateProps) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-800 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function EmailGate({ children }: EmailGateProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                 required
               />
             </div>
@@ -110,7 +110,7 @@ export default function EmailGate({ children }: EmailGateProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-purple-800 text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-purple-900 transition focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 py-3 px-6 rounded-lg font-semibold shadow hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Setting you up..." : "Continue"}
             </button>
