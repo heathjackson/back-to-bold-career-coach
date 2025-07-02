@@ -244,7 +244,7 @@ export default function CoverLetterPage() {
             
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-blue-800 text-sm">
-                💡 <strong>Tip:</strong> Customize this cover letter to match your specific experience and the company's culture. 
+                💡 <strong>Tip:</strong> Customize this cover letter to match your specific experience and the company&apos;s culture. 
                 Make sure to proofread and adjust the tone as needed.
               </p>
             </div>

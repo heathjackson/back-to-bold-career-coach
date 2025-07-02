@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import EmailCollector from "@/components/EmailCollector";
 
 export default function ToolkitPage() {
-  const [hasEmail, setHasEmail] = useState(false);
   const [showEmailCollector, setShowEmailCollector] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const checkEmail = () => {
       const email = localStorage.getItem("userEmail");
-      setHasEmail(!!email);
       
       // If no email, show collector immediately
       if (!email) {
@@ -36,7 +34,6 @@ export default function ToolkitPage() {
   }, []);
 
   const handleEmailCollected = () => {
-    setHasEmail(true);
     setShowEmailCollector(false);
     // Redirect to the external toolkit after email is collected
     redirectToToolkit();
@@ -89,7 +86,7 @@ export default function ToolkitPage() {
           
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="bg-blue-900/20 rounded-lg p-6 border border-blue-700">
-              <h3 className="text-xl font-semibold text-white mb-4">🎯 What's Included:</h3>
+              <h3 className="text-xl font-semibold text-white mb-4">🎯 What&apos;s Included:</h3>
               <ul className="space-y-3 text-blue-200">
                 <li className="flex items-start">
                   <span className="text-blue-400 mr-2">•</span>
