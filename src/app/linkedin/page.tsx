@@ -14,13 +14,12 @@ export default function LinkedInPage() {
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
   const [showEmailCollector, setShowEmailCollector] = useState(false);
-  const [hasEmail, setHasEmail] = useState(false);
 
   // Check if user already has email
   useEffect(() => {
     const checkEmail = () => {
       const userEmail = localStorage.getItem("userEmail");
-      setHasEmail(!!userEmail);
+      // Email status is checked dynamically when needed
     };
     
     // Check on mount
@@ -79,7 +78,6 @@ export default function LinkedInPage() {
   };
 
   const handleEmailCollected = () => {
-    setHasEmail(true);
     setShowEmailCollector(false);
     // Automatically submit the form after email is collected
     submitForm();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface EmailEntry {
   email: string;
@@ -15,12 +15,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // Check authentication on load
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const response = await fetch('/api/admin/verify');
       const data = await response.json();
@@ -29,10 +24,15 @@ export default function AdminPage() {
         setIsAuthenticated(true);
         loadEmails();
       }
-    } catch (error) {
-      console.error('Auth check failed:', error);
+    } catch {
+      console.error('Auth check failed');
     }
-  };
+  }, []);
+
+  // Check authentication on load
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -136,7 +136,7 @@ export default function CoverLetterPage() {
                 name="background"
                 rows={4}
                 className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-white placeholder-gray-400"
-                placeholder="Briefly describe your background, career break, and why you're returning to work..."
+                placeholder="Briefly describe your background, career break, and why you&apos;re returning to work..."
                 value={form.background}
                 onChange={handleChange}
                 required

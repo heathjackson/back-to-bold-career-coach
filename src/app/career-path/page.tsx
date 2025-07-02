@@ -41,14 +41,13 @@ export default function CareerPathPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [gptResponse, setGptResponse] = useState<string>("");
   const [showEmailCollector, setShowEmailCollector] = useState(false);
-  const [hasEmail, setHasEmail] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<string[]>([]);
 
   // Check if user already has email
   useEffect(() => {
     const checkEmail = () => {
       const userEmail = localStorage.getItem("userEmail");
-      setHasEmail(!!userEmail);
+      // Email status is checked dynamically when needed
     };
     
     // Check on mount
@@ -238,7 +237,6 @@ export default function CareerPathPage() {
   };
 
   const handleEmailCollected = () => {
-    setHasEmail(true);
     setShowEmailCollector(false);
     // Automatically submit the form after email is collected
     submitForm();
