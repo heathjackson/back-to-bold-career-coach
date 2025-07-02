@@ -18,7 +18,6 @@ export default function LinkedInPage() {
   // Check if user already has email
   useEffect(() => {
     const checkEmail = () => {
-      const userEmail = localStorage.getItem("userEmail");
       // Email status is checked dynamically when needed
     };
     
@@ -87,7 +86,7 @@ export default function LinkedInPage() {
     <div className="min-h-screen bg-[--color-bg-primary] py-12 text-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-blue-900/40 rounded-2xl shadow-lg p-10 mb-10">
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">LinkedIn "About" Refresher</h1>
+          <h1 className="text-3xl font-bold text-white mb-6 text-center">LinkedIn &quot;About&quot; Refresher</h1>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div>
               <label htmlFor="previous" className="block text-lg font-semibold text-white mb-2">

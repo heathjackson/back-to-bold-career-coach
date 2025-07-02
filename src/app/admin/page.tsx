@@ -55,7 +55,7 @@ export default function AdminPage() {
       } else {
         setLoginError(data.error || "Login failed");
       }
-    } catch (error) {
+    } catch {
       setLoginError("Network error. Please try again.");
     }
   };
@@ -65,8 +65,8 @@ export default function AdminPage() {
       await fetch('/api/admin/logout', {
         method: 'POST',
       });
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch {
+      console.error('Logout error');
     }
     
     setIsAuthenticated(false);

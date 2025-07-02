@@ -46,7 +46,6 @@ export default function CareerPathPage() {
   // Check if user already has email
   useEffect(() => {
     const checkEmail = () => {
-      const userEmail = localStorage.getItem("userEmail");
       // Email status is checked dynamically when needed
     };
     
