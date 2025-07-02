@@ -31,7 +31,7 @@ export default function EnhancedEmailCollector({
       if (adminEmails) {
         try {
           const emails = JSON.parse(adminEmails);
-          const emailList = emails.map((entry: any) => entry.email);
+          const emailList = emails.map((entry: { email: string }) => entry.email);
           setLocalSuggestedEmails(emailList);
         } catch (error) {
           console.error("Error parsing admin emails:", error);

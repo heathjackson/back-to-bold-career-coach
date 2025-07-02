@@ -1,12 +1,13 @@
 // Database integration example
 // This shows how you could connect to a real database to store user emails
 
-interface User {
-  id: string;
-  email: string;
-  createdAt: Date;
-  lastVisit: Date;
-}
+// Example User interface for database integration
+// interface User {
+//   id: string;
+//   email: string;
+//   createdAt: Date;
+//   lastVisit: Date;
+// }
 
 // Example with different database options:
 
