@@ -1,5 +1,14 @@
 "use client";
 
+// MANUAL EMAIL ADDITION FOR TESTING:
+// To add emails manually, open browser console and run:
+// localStorage.setItem("userEmail", "test@example.com");
+// 
+// To add multiple emails for testing different scenarios:
+// localStorage.setItem("userEmail", "user1@example.com");
+// localStorage.setItem("userEmail", "user2@example.com");
+// (Note: localStorage only stores one email per domain, so the last one set will be used)
+
 import { useState } from "react";
 
 interface EmailCollectorProps {

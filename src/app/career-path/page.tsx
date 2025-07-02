@@ -46,10 +46,25 @@ export default function CareerPathPage() {
 
   // Check if user already has email
   useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
-    if (userEmail) {
-      setHasEmail(true);
-    }
+    const checkEmail = () => {
+      const userEmail = localStorage.getItem("userEmail");
+      setHasEmail(!!userEmail);
+    };
+    
+    // Check on mount
+    checkEmail();
+    
+    // Listen for storage changes (when localStorage is cleared in another tab)
+    const handleStorageChange = () => {
+      checkEmail();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   // Define all possible questions upfront
@@ -172,8 +187,12 @@ export default function CareerPathPage() {
   };
 
   const handleSubmit = async () => {
+    // Double-check localStorage in case it was cleared
+    const currentEmail = localStorage.getItem("userEmail");
+    const shouldShowEmailCollector = !currentEmail;
+    
     // Check if user has email, if not show email collector
-    if (!hasEmail) {
+    if (shouldShowEmailCollector) {
       setShowEmailCollector(true);
       return;
     }
@@ -243,22 +262,22 @@ export default function CareerPathPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-blue-900/40 rounded-2xl shadow-lg p-10 mb-10">
           <h1 className="text-3xl font-bold text-white mb-6 text-center">Career Path Assessment</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-blue-200 max-w-2xl mx-auto">
             Let&apos;s have a conversation about your career journey and discover opportunities that align with your experience and goals.
           </p>
         </div>
 
         {!gptResponse ? (
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-blue-900/40 rounded-lg shadow-md p-8 border border-blue-800">
             {/* Progress indicator */}
             <div className="mb-8">
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+              <div className="flex items-center justify-between text-sm text-blue-200 mb-2">
                 <span>Question {currentStep + 1} of {totalQuestions}</span>
                 <span>{Math.round(((currentStep + 1) / totalQuestions) * 100)}% complete</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-700 rounded-full h-2">
                 <div 
-                  className="bg-cyan-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${((currentStep + 1) / totalQuestions) * 100}%` }}
                 ></div>
               </div>
@@ -267,8 +286,8 @@ export default function CareerPathPage() {
             {/* Current question */}
             {currentQuestion && (
               <div className="space-y-6">
-                <div className="bg-cyan-50 rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                <div className="bg-blue-900/20 rounded-lg p-6 border border-blue-700">
+                  <h2 className="text-xl font-semibold text-white mb-4">
                     {currentQuestion.text}
                   </h2>
                   
@@ -276,7 +295,7 @@ export default function CareerPathPage() {
                     <textarea
                       name={currentQuestion.id}
                       rows={currentQuestion.rows || 3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-white placeholder-gray-400"
                       placeholder={currentQuestion.placeholder}
                       value={formData[currentQuestion.id as keyof FormData] || ""}
                       onChange={handleInputChange}
@@ -286,7 +305,7 @@ export default function CareerPathPage() {
                     <input
                       type="text"
                       name={currentQuestion.id}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-white placeholder-gray-400"
                       placeholder={currentQuestion.placeholder}
                       value={formData[currentQuestion.id as keyof FormData] || ""}
                       onChange={handleInputChange}
@@ -301,7 +320,7 @@ export default function CareerPathPage() {
                     type="button"
                     onClick={handlePrevious}
                     disabled={currentStep === 0}
-                    className="bg-gray-200 text-gray-800 py-3 px-6 rounded-md font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-gray-700 text-white py-3 px-6 rounded-md font-semibold hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
@@ -310,7 +329,7 @@ export default function CareerPathPage() {
                     type="button"
                     onClick={handleNext}
                     disabled={!formData[currentQuestion.id as keyof FormData] || isLoading}
-                    className="bg-cyan-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-blue-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? "Thinking..." : currentStep === totalQuestions - 1 ? "Get My Results" : "Next"}
                   </button>
@@ -320,11 +339,11 @@ export default function CareerPathPage() {
 
             {/* Conversation history */}
             {conversationHistory.length > 0 && (
-              <div className="mt-8 border-t pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Our Conversation</h3>
-                <div className="space-y-3 max-h-60 overflow-y-auto">
+              <div className="mt-8 border-t border-blue-700 pt-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Our Conversation</h3>
+                <div className="space-y-3 max-h-60 overflow-y-auto text-blue-200">
                   {conversationHistory.map((entry, index) => (
-                    <div key={index} className="text-sm text-gray-600">
+                    <div key={index} className="text-sm">
                       {entry}
                     </div>
                   ))}
@@ -333,38 +352,89 @@ export default function CareerPathPage() {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-blue-900/40 rounded-lg shadow-md p-8 border border-blue-800">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              <h2 className="text-2xl font-bold text-white flex items-center">
                 {gptResponse.startsWith('❌') || gptResponse.startsWith('🚫') || gptResponse.startsWith('🔑') ? '⚠️ Error' : '🔍 Career Suggestions'}
               </h2>
-              <button
-                onClick={resetConversation}
-                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-semibold hover:bg-gray-300 transition-colors"
-              >
-                Start Over
-              </button>
-            </div>
-            <div className="prose prose-lg max-w-none">
-              <div className="bg-gray-50 rounded-lg p-6 border-l-4 border-cyan-500">
-                <ReactMarkdown 
-                  components={{
-                    h1: ({children}) => <h1 className="text-2xl font-bold text-gray-900 mb-4">{children}</h1>,
-                    h2: ({children}) => <h2 className="text-xl font-semibold text-gray-800 mb-3 mt-6">{children}</h2>,
-                    h3: ({children}) => <h3 className="text-lg font-semibold text-gray-800 mb-2 mt-4">{children}</h3>,
-                    p: ({children}) => <p className="text-gray-700 mb-3 leading-relaxed">{children}</p>,
-                    ul: ({children}) => <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700">{children}</ul>,
-                    ol: ({children}) => <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700">{children}</ol>,
-                    li: ({children}) => <li className="text-gray-700">{children}</li>,
-                    strong: ({children}) => <strong className="font-semibold text-gray-900">{children}</strong>,
-                    em: ({children}) => <em className="italic text-gray-800">{children}</em>,
-                    blockquote: ({children}) => <blockquote className="border-l-4 border-cyan-300 pl-4 italic text-gray-600 mb-4">{children}</blockquote>,
-                  }}
+              <div className="flex gap-2">
+                {!gptResponse.startsWith('❌') && !gptResponse.startsWith('🚫') && !gptResponse.startsWith('🔑') && (
+                  <>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(gptResponse);
+                      }}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                    >
+                      📋 Copy
+                    </button>
+                    <button
+                      onClick={() => {
+                        const blob = new Blob([gptResponse], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'career-suggestions.txt';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                    >
+                      💾 Download
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={resetConversation}
+                  className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium"
                 >
-                  {gptResponse}
-                </ReactMarkdown>
+                  🔄 Start Over
+                </button>
               </div>
             </div>
+            
+            {gptResponse.startsWith('❌') || gptResponse.startsWith('🚫') || gptResponse.startsWith('🔑') ? (
+              // Error display
+              <div className="bg-red-900/20 rounded-lg p-6 border-l-4 border-red-500">
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-red-200 leading-relaxed text-base">{gptResponse}</p>
+                </div>
+              </div>
+            ) : (
+              // Success display
+              <div className="bg-white rounded-lg p-8 shadow-lg border border-blue-200">
+                <div className="prose prose-lg max-w-none">
+                  <ReactMarkdown 
+                    components={{
+                      h1: ({children}) => <h1 className="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2">{children}</h1>,
+                      h2: ({children}) => <h2 className="text-xl font-semibold text-gray-800 mb-3 mt-6">{children}</h2>,
+                      h3: ({children}) => <h3 className="text-lg font-semibold text-gray-800 mb-2 mt-4">{children}</h3>,
+                      p: ({children}) => <p className="text-gray-700 mb-4 leading-relaxed text-base">{children}</p>,
+                      ul: ({children}) => <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700">{children}</ul>,
+                      ol: ({children}) => <ol className="list-decimal list-inside space-y-2 mb-4 text-gray-700">{children}</ol>,
+                      li: ({children}) => <li className="text-gray-700">{children}</li>,
+                      strong: ({children}) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                      em: ({children}) => <em className="italic text-gray-600">{children}</em>,
+                      blockquote: ({children}) => <blockquote className="border-l-4 border-blue-400 pl-4 italic text-gray-600 mb-4 bg-blue-50 py-2 rounded-r">{children}</blockquote>,
+                      br: () => <br className="mb-2" />,
+                    }}
+                  >
+                    {gptResponse}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+            
+            {!gptResponse.startsWith('❌') && !gptResponse.startsWith('🚫') && !gptResponse.startsWith('🔑') && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-blue-800 text-sm">
+                  💡 <strong>Next Steps:</strong> Research these career paths, connect with professionals in those fields, 
+                  and consider taking relevant courses or certifications to build your skills.
+                </p>
+              </div>
+            )}
           </div>
         )}
 

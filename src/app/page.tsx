@@ -13,16 +13,12 @@ export default function Home() {
               </svg>
               AI-Powered Career Coaching
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
-              Back to Bold Career Coach
-              <span className="block text-blue-300">
-                AI-Powered Career Comeback Tools
-              </span>
+            <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-4 tracking-wide text-center">
+                BACK TO BOLD CAREER COACH
             </h1>
-            <p className="text-xl md:text-2xl text-blue-200 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Transform your job search with AI-powered tools that help you craft compelling resumes, 
-              write standout cover letters, and discover your ideal career path.
-            </p>
+            <div className="max-w-2xl mx-auto text-center text-blue-200 text-2xl font-semibold mb-10">
+                We built Back to Bold for moms like us — returning to work after time away can feel overwhelming. This toolkit is here to help you start strong, one step at a time.
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/career-path">
                 <span className="group relative inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
@@ -39,242 +35,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-16 bg-brand-primary border-b border-brand-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-primary mb-4">
-              Why Choose Our AI-Powered Tools?
-            </h2>
-            <p className="text-xl text-brand-secondary max-w-3xl mx-auto">
-              Professional-grade assistance to help you stand out in today&apos;s competitive job market.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-brand-accent rounded-2xl flex items-center justify-center mx-auto backdrop-blur-sm border border-brand-secondary">
-                <svg className="w-8 h-8 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-brand-primary">AI-Powered</h3>
-              <p className="text-brand-secondary">Leverage advanced AI technology to create professional, tailored content for your job search.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-brand-accent rounded-2xl flex items-center justify-center mx-auto backdrop-blur-sm border border-brand-secondary">
-                <svg className="w-8 h-8 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-brand-primary">Secure & Private</h3>
-              <p className="text-brand-secondary">Your personal information and documents are kept secure and confidential.</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-brand-accent rounded-2xl flex items-center justify-center mx-auto backdrop-blur-sm border border-brand-secondary">
-                <svg className="w-8 h-8 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-brand-primary">Professional Quality</h3>
-              <p className="text-brand-secondary">Get polished, industry-standard documents that help you make a strong impression.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Services Section */}
-      <section className="py-24 bg-brand-primary">
+      <section className="py-24 bg-[--color-bg-primary]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-brand-primary mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Everything You Need to Land Your Dream Job
             </h2>
-            <p className="text-xl text-brand-secondary max-w-3xl mx-auto">
+            <p className="text-xl text-blue-200 max-w-3xl mx-auto">
               Our AI-powered tools work together to create a comprehensive job search strategy tailored to your unique career goals.
             </p>
           </div>
-          
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Resume Service */}
-            <div className="group bg-brand-secondary rounded-2xl p-8 backdrop-blur-sm border border-brand-primary hover:border-brand-secondary transition-all duration-300">
-              <div className="flex items-start mb-6">
-                <div className="flex-shrink-0 w-14 h-14 bg-brand-accent rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300 border border-brand-secondary">
-                  <svg className="w-7 h-7 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-brand-primary mb-2">Resume Rewriting</h3>
-                  <p className="text-brand-secondary leading-relaxed">
-                    Transform your resume with AI-powered optimization that highlights your achievements, 
-                    matches job descriptions, and passes ATS systems.
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  ATS-optimized formatting
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Achievement-focused content
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Keyword optimization
-                </div>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Resume Card */}
+            <div className="bg-blue-900/40 rounded-2xl p-8 flex flex-col items-center text-center shadow border border-blue-800">
+              <div className="text-4xl mb-4">📄</div>
+              <h3 className="text-xl font-bold text-white mb-2">Resume Help</h3>
+              <p className="text-blue-200 mb-6">Get an AI-optimized resume that highlights your strengths and gets noticed by employers.</p>
               <Link href="/resume">
-                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
-                  Rewrite My Resume
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 transition-all duration-200">
+                  Get Resume Help
                 </span>
               </Link>
             </div>
-
-            {/* Cover Letter Service */}
-            <div className="group bg-brand-secondary rounded-2xl p-8 backdrop-blur-sm border border-brand-primary hover:border-brand-secondary transition-all duration-300">
-              <div className="flex items-start mb-6">
-                <div className="flex-shrink-0 w-14 h-14 bg-brand-accent rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300 border border-brand-secondary">
-                  <svg className="w-7 h-7 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-brand-primary mb-2">Cover Letters</h3>
-                  <p className="text-brand-secondary leading-relaxed">
-                    Create compelling cover letters that tell your unique story and connect your experience 
-                    directly to the role you&apos;re applying for.
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Personalized storytelling
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Role-specific customization
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Professional tone & structure
-                </div>
-              </div>
+            {/* Cover Letter Card */}
+            <div className="bg-blue-900/40 rounded-2xl p-8 flex flex-col items-center text-center shadow border border-blue-800">
+              <div className="text-4xl mb-4">✉️</div>
+              <h3 className="text-xl font-bold text-white mb-2">Cover Letter</h3>
+              <p className="text-blue-200 mb-6">Craft a personalized cover letter that tells your story and connects you to the job you want.</p>
               <Link href="/cover-letter">
-                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
-                  Write Cover Letter
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 transition-all duration-200">
+                  Write My Cover Letter
                 </span>
               </Link>
             </div>
-
-            {/* LinkedIn Service */}
-            <div className="group bg-brand-secondary rounded-2xl p-8 backdrop-blur-sm border border-brand-primary hover:border-brand-secondary transition-all duration-300">
-              <div className="flex items-start mb-6">
-                <div className="flex-shrink-0 w-14 h-14 bg-brand-accent rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300 border border-brand-secondary">
-                  <svg className="w-7 h-7 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-brand-primary mb-2">LinkedIn Profile</h3>
-                  <p className="text-brand-secondary leading-relaxed">
-                    Optimize your LinkedIn profile to attract recruiters and showcase your professional 
-                    brand with compelling headlines and summaries.
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Compelling headline optimization
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Professional summary writing
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Keyword optimization
-                </div>
-              </div>
+            {/* LinkedIn Card */}
+            <div className="bg-blue-900/40 rounded-2xl p-8 flex flex-col items-center text-center shadow border border-blue-800">
+              <div className="text-4xl mb-4">💼</div>
+              <h3 className="text-xl font-bold text-white mb-2">LinkedIn</h3>
+              <p className="text-blue-200 mb-6">Update your LinkedIn profile to attract recruiters and showcase your professional brand.</p>
               <Link href="/linkedin">
-                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
-                  Optimize Profile
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 transition-all duration-200">
+                  Update My LinkedIn
                 </span>
               </Link>
             </div>
-
-            {/* Career Path Service */}
-            <div className="group bg-brand-secondary rounded-2xl p-8 backdrop-blur-sm border border-brand-primary hover:border-brand-secondary transition-all duration-300">
-              <div className="flex items-start mb-6">
-                <div className="flex-shrink-0 w-14 h-14 bg-brand-accent rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300 border border-brand-secondary">
-                  <svg className="w-7 h-7 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-brand-primary mb-2">Career Path Assessment</h3>
-                  <p className="text-brand-secondary leading-relaxed">
-                    Discover your ideal career path with AI-powered guidance based on your skills, 
-                    interests, and professional goals.
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Personalized career recommendations
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Skill gap analysis
-                </div>
-                <div className="flex items-center text-sm text-brand-secondary">
-                  <svg className="w-4 h-4 text-brand-accent mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Industry insights & trends
-                </div>
-              </div>
+            {/* Career Path Card */}
+            <div className="bg-blue-900/40 rounded-2xl p-8 flex flex-col items-center text-center shadow border border-blue-800">
+              <div className="text-4xl mb-4">🧭</div>
+              <h3 className="text-xl font-bold text-white mb-2">Career Path</h3>
+              <p className="text-blue-200 mb-6">Discover your next step with AI-powered guidance tailored to your skills and goals.</p>
+              <div className="mb-6" />
               <Link href="/career-path">
-                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
-                  Find My Path
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <span className="inline-flex items-center px-6 py-3 bg-blue-600 font-semibold rounded-lg text-white hover:bg-blue-700 transition-all duration-200">
+                  Find My Next Step
                 </span>
               </Link>
             </div>

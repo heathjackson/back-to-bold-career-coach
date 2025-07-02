@@ -24,18 +24,9 @@ export default function Navbar() {
               <Link href="/cover-letter" className="text-white hover:text-blue-300 transition font-semibold text-lg">Cover Letter</Link>
               <Link href="/linkedin" className="text-white hover:text-blue-300 transition font-semibold text-lg">LinkedIn</Link>
               <Link href="/career-path" className="text-white hover:text-blue-300 transition font-semibold text-lg">Career Path</Link>
-              <a
-                href="https://www.notion.so/Back-to-Bold-AI-Resume-Prompt-Pack-1f02ec42493f80008008cbf7250372a9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-blue-300 transition font-semibold text-lg"
-              >
+              <Link href="/toolkit" className="text-white hover:text-blue-300 transition font-semibold text-lg">
                 Free Toolkit
-              </a>
-            </div>
-            <div className="hidden md:flex items-center space-x-4 ml-8">
-              <Link href="/signin" className="px-5 py-2 border border-blue-400 text-blue-400 rounded-lg font-semibold hover:bg-blue-900 hover:text-white transition">Sign In</Link>
-              <Link href="/signup" className="px-5 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition shadow">Sign Up</Link>
+              </Link>
             </div>
           </div>
         </div>

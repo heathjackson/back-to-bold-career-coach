@@ -1,48 +1,50 @@
 "use client";
 
-import { useState } from "react";
-
-interface ATSScore {
-  overall: number;
-  keywordMatch: number;
-  formatting: number;
-  readability: number;
-  achievementFocus: number;
-  details: {
-    keywordMatches: string[];
-    missingKeywords: string[];
-    formattingIssues: string[];
-    readabilityScore: string;
-    achievementCount: number;
-    optimizationSummary: string;
-    improvements: string[];
-  };
-}
+import { useState, useEffect } from "react";
+import EmailCollector from "@/components/EmailCollector";
 
 interface ResumeResponse {
   resume: string;
-  atsScore: ATSScore;
   message: string;
 }
 
 export default function ResumePage() {
   const [result, setResult] = useState<string>("");
-  const [atsScore, setAtsScore] = useState<ATSScore | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [showEmailCollector, setShowEmailCollector] = useState(false);
+  const [hasEmail, setHasEmail] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
+
+  // Check if user already has email
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) {
+      setHasEmail(true);
+    }
+  }, []);
 
   const handleSubmit = async (formData: FormData) => {
+    // Check if user has email, if not show email collector
+    if (!hasEmail) {
+      setPendingFormData(formData);
+      setShowEmailCollector(true);
+      return;
+    }
+
+    // Proceed with form submission
+    await submitForm(formData);
+  };
+
+  const submitForm = async (formData: FormData) => {
     setIsLoading(true);
     setError("");
     setResult("");
-    setAtsScore(null);
 
     try {
       const resume = formData.get("resume") as string;
       const jobDescription = formData.get("jobDescription") as string;
       const targetRole = formData.get("targetRole") as string;
-      const yearsOfExperience = parseInt(formData.get("yearsOfExperience") as string) || 5;
-      const industry = formData.get("industry") as string || "general";
 
       const response = await fetch("/api/resume", {
         method: "POST",
@@ -53,8 +55,6 @@ export default function ResumePage() {
           resume,
           jobDescription,
           targetRole,
-          yearsOfExperience,
-          industry,
         }),
       });
 
@@ -65,11 +65,20 @@ export default function ResumePage() {
       }
 
       setResult(data.resume);
-      setAtsScore(data.atsScore);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleEmailCollected = () => {
+    setHasEmail(true);
+    setShowEmailCollector(false);
+    // Automatically submit the form after email is collected
+    if (pendingFormData) {
+      submitForm(pendingFormData);
+      setPendingFormData(null);
     }
   };
 
@@ -98,19 +107,6 @@ export default function ResumePage() {
     }
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-400";
-    if (score >= 60) return "text-yellow-400";
-    return "text-red-400";
-  };
-
-  const getScoreLabel = (score: number) => {
-    if (score >= 80) return "Excellent";
-    if (score >= 60) return "Good";
-    if (score >= 40) return "Fair";
-    return "Needs Improvement";
-  };
-
   const formatResumeOutput = (resume: string) => {
     // Split the resume into lines
     const lines = resume.split('\n');
@@ -126,10 +122,10 @@ export default function ResumePage() {
       
       // Detect and format section headers
       const sectionHeaders = [
-        'experience', 'education', 'skills', 'summary', 'objective', 
-        'professional summary', 'work experience', 'employment history',
-        'technical skills', 'certifications', 'awards', 'publications',
-        'projects', 'volunteer', 'languages', 'interests'
+        'summary', 'experience', 'education', 'skills', 'technical skills', 
+        'objective', 'professional summary', 'work experience', 'employment history',
+        'certifications', 'awards', 'publications', 'projects', 'volunteer', 
+        'languages', 'interests', 'additional'
       ];
       
       const isSectionHeader = sectionHeaders.some(header => 
@@ -157,6 +153,12 @@ export default function ResumePage() {
       } else if (line.match(/^[A-Z][A-Za-z\s]+$/)) {
         // Likely a name or title (starts with capital, no punctuation)
         formattedLines.push(`**${line}**`);
+      } else if (line.includes('|') && line.includes('@')) {
+        // Contact information line
+        formattedLines.push(line);
+      } else if (line.includes('[') && line.includes(']')) {
+        // Links line
+        formattedLines.push(line);
       } else {
         // Regular text
         formattedLines.push(line);
@@ -234,47 +236,6 @@ export default function ResumePage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="yearsOfExperience" className="block text-sm font-medium text-brand-primary mb-2">
-                    Years of Experience
-                  </label>
-                  <select
-                    id="yearsOfExperience"
-                    name="yearsOfExperience"
-                    defaultValue="5"
-                    className="w-full px-4 py-3 bg-gray-800 border border-brand-primary rounded-lg text-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent"
-                  >
-                    <option value="1">1 year</option>
-                    <option value="3">3 years</option>
-                    <option value="5">5 years</option>
-                    <option value="8">8 years</option>
-                    <option value="12">12 years</option>
-                    <option value="15">15+ years</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="industry" className="block text-sm font-medium text-brand-primary mb-2">
-                    Industry
-                  </label>
-                  <select
-                    id="industry"
-                    name="industry"
-                    defaultValue="tech"
-                    className="w-full px-4 py-3 bg-gray-800 border border-brand-primary rounded-lg text-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent"
-                  >
-                    <option value="tech">Technology</option>
-                    <option value="marketing">Marketing</option>
-                    <option value="sales">Sales</option>
-                    <option value="finance">Finance</option>
-                    <option value="healthcare">Healthcare</option>
-                    <option value="education">Education</option>
-                    <option value="general">General</option>
-                  </select>
-                </div>
-              </div>
-
               <button
                 type="submit"
                 disabled={isLoading}
@@ -297,90 +258,6 @@ export default function ResumePage() {
               Results
             </h2>
 
-            {atsScore && (
-              <div className="mb-6 p-4 bg-gray-800/50 rounded-lg border border-brand-primary">
-                <h3 className="text-lg font-semibold text-brand-primary mb-4">
-                  ATS Optimization Score
-                </h3>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="text-center">
-                    <div className={`text-3xl font-bold ${getScoreColor(atsScore.overall)}`}>
-                      {atsScore.overall}%
-                    </div>
-                    <div className="text-sm text-brand-secondary">
-                      {getScoreLabel(atsScore.overall)}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-brand-secondary">Keyword Match:</span>
-                      <span className={getScoreColor(atsScore.keywordMatch)}>{atsScore.keywordMatch}%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-brand-secondary">Formatting:</span>
-                      <span className={getScoreColor(atsScore.formatting)}>{atsScore.formatting}%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-brand-secondary">Readability:</span>
-                      <span className={getScoreColor(atsScore.readability)}>{atsScore.readability}%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-brand-secondary">Achievement Focus:</span>
-                      <span className={getScoreColor(atsScore.achievementFocus)}>{atsScore.achievementFocus}%</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Optimization Summary */}
-                {atsScore.details.optimizationSummary && (
-                  <div className="mb-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
-                    <div className="text-sm font-medium text-green-400 mb-2">Optimizations Applied:</div>
-                    <div className="text-xs text-green-300 whitespace-pre-line">
-                      {atsScore.details.optimizationSummary}
-                    </div>
-                  </div>
-                )}
-
-                {/* Improvement Suggestions */}
-                {atsScore.details.improvements.length > 0 && (
-                  <div className="mb-4">
-                    <div className="text-sm font-medium text-brand-primary mb-2">Suggestions for Further Improvement:</div>
-                    <ul className="text-xs text-brand-secondary space-y-1">
-                      {atsScore.details.improvements.map((suggestion, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-brand-accent mr-2">•</span>
-                          <span>{suggestion}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {atsScore.details.missingKeywords.length > 0 && (
-                  <div className="mb-3">
-                    <div className="text-sm font-medium text-brand-primary mb-1">Missing Keywords:</div>
-                    <div className="text-xs text-brand-secondary">
-                      {atsScore.details.missingKeywords.slice(0, 5).join(", ")}
-                      {atsScore.details.missingKeywords.length > 5 && "..."}
-                    </div>
-                  </div>
-                )}
-
-                {atsScore.details.formattingIssues.length > 0 && (
-                  <div>
-                    <div className="text-sm font-medium text-brand-primary mb-1">Formatting Issues:</div>
-                    <ul className="text-xs text-brand-secondary space-y-1">
-                      {atsScore.details.formattingIssues.map((issue, index) => (
-                        <li key={index}>• {issue}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
-
             {result && (
               <div>
                 <div className="flex justify-between items-center mb-4">
@@ -390,15 +267,15 @@ export default function ResumePage() {
                   <div className="flex gap-2">
                     <button
                       onClick={copyToClipboard}
-                      className="px-3 py-1 text-sm bg-blue-900/30 text-blue-200 rounded hover:bg-blue-800 transition-colors"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                     >
-                      Copy
+                      📋 Copy
                     </button>
                     <button
                       onClick={downloadText}
-                      className="px-3 py-1 text-sm bg-blue-900/30 text-blue-200 rounded hover:bg-blue-800 transition-colors"
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
                     >
-                      Download
+                      💾 Download
                     </button>
                   </div>
                 </div>
@@ -418,7 +295,7 @@ export default function ResumePage() {
                           // Bold headers
                           const text = line.slice(2, -2);
                           return (
-                            <div key={index} className="font-bold text-lg text-gray-800 mb-2 mt-4 first:mt-0">
+                            <div key={index} className="font-bold text-lg text-gray-800 mb-3 mt-6 first:mt-0 border-b border-gray-300 pb-1">
                               {text}
                             </div>
                           );
@@ -426,7 +303,7 @@ export default function ResumePage() {
                           // Italic dates
                           const text = line.slice(1, -1);
                           return (
-                            <div key={index} className="text-gray-600 italic mb-1">
+                            <div key={index} className="text-gray-600 italic mb-2 text-sm">
                               {text}
                             </div>
                           );
@@ -434,18 +311,32 @@ export default function ResumePage() {
                           // Bullet points
                           const text = line.slice(3);
                           return (
-                            <div key={index} className="ml-4 mb-1 flex items-start">
-                              <span className="text-gray-500 mr-2 mt-1">•</span>
-                              <span>{text}</span>
+                            <div key={index} className="ml-6 mb-2 flex items-start">
+                              <span className="text-gray-500 mr-3 mt-1 text-sm">•</span>
+                              <span className="text-sm">{text}</span>
+                            </div>
+                          );
+                        } else if (line.includes('|') && line.includes('@')) {
+                          // Contact information line
+                          return (
+                            <div key={index} className="mb-2 text-sm text-gray-700">
+                              {line}
+                            </div>
+                          );
+                        } else if (line.includes('[') && line.includes(']')) {
+                          // Links line
+                          return (
+                            <div key={index} className="mb-2 text-sm text-blue-600">
+                              {line}
                             </div>
                           );
                         } else if (line.trim() === '') {
                           // Empty lines
-                          return <div key={index} className="h-2"></div>;
+                          return <div key={index} className="h-3"></div>;
                         } else {
                           // Regular text
                           return (
-                            <div key={index} className="mb-1">
+                            <div key={index} className="mb-2 text-sm">
                               {line}
                             </div>
                           );
@@ -453,6 +344,13 @@ export default function ResumePage() {
                       })}
                     </div>
                   </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-blue-800 text-sm">
+                    💡 <strong>Tip:</strong> This ATS-optimized resume is tailored to your target role. 
+                    Review and customize the content to ensure it accurately reflects your experience and achievements.
+                  </p>
                 </div>
               </div>
             )}
@@ -473,6 +371,13 @@ export default function ResumePage() {
           </div>
         </div>
       </div>
+
+      {/* Email Collector Modal */}
+      <EmailCollector
+        isOpen={showEmailCollector}
+        onClose={() => setShowEmailCollector(false)}
+        onEmailCollected={handleEmailCollected}
+      />
     </div>
   );
 } 
